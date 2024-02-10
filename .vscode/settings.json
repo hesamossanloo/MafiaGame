@@ -1,0 +1,7 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "eslint.format.enable": true
+}

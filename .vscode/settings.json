@@ -1,7 +1,20 @@
 {
-    "files.autoSave": "afterDelay",
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "eslint.format.enable": true
+  // Format on save with Prettier
+  "editor.formatOnSave": true,
+  // Optional: If you want ESLint to auto-fix issues on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  // Ensure VS Code uses the version of Prettier and ESLint installed in your project
+  "eslint.nodePath": "./node_modules/eslint",
+  "prettier.requireConfig": true,
+  // Use Prettier for formatting supported files
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "inlineChat.holdToSpeech": false
 }

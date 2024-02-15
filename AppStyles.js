@@ -21,13 +21,10 @@ export default StyleSheet.create({
     padding: 20, // Container padding
   },
   languageSwitch: {
-    position: 'absolute',
-    top: 40, // Adjust based on your status bar height or notch
-    right: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 10,
-    marginRight: 10,
+    padding: 20,
+    backgroundColor: 'red',
   },
   flag: {
     fontSize: 32, // Adjust based on your preference
@@ -67,5 +64,14 @@ export default StyleSheet.create({
   buttonText: {
     color: 'white',
     textAlign: 'center',
+  },
+  error: {
+    color: 'red',
+    padding: 10,
+  },
+  headerTitle: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 })

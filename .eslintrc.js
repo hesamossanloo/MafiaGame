@@ -1,12 +1,12 @@
 // .eslintrc.js
 module.exports = {
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:prettier/recommended",
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
   ],
-  plugins: ["react", "prettier"],
+  plugins: ['react', 'prettier'],
   env: {
     es6: true,
     node: true,
@@ -17,15 +17,16 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 2018,
-    sourceType: "module",
+    sourceType: 'module',
   },
   rules: {
-    "prettier/prettier": "error",
+    'prettier/prettier': 'error',
+    'no-undef': 'error', // Add this line
     // Add other custom ESLint rules here
   },
   settings: {
     react: {
-      version: "detect",
+      version: 'detect',
     },
   },
 };

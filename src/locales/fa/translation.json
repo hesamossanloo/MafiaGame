@@ -2,5 +2,8 @@
   "nameOfGodLabel": "نام خدا را وارد کنید",
   "toggleLang": "English",
   "createNewGame": "ایجاد بازی جدید",
-  "numberOfPlayers": "تعداد بازیکنان را وارد کنید"
+  "numberOfPlayers": "تعداد بازیکنان را وارد کنید",
+  "numberOfPlayersRequired": "لطفاً نام خدا را وارد کنید",
+  "startPageTitle": "صفحه شروع",
+  "rolesPageTitle": "صفحه نقش‌ها"
 }

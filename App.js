@@ -1,101 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Image,
-  Switch,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import styles from './AppStyles' // Adjust the path as needed
-import { addNewGameToFirestore } from './src/utilities/firestoreService'
-import i18n from './src/utilities/i18n' // Updated path
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import CustomHeader from './src/components/CustomHeader';
+import RolesPage from './src/components/RolesPage';
+import StartPage from './src/components/StartPage';
+import i18n from './src/utilities/i18n'; // Updated path
+
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [isEnabled, setIsEnabled] = useState(i18n.language === 'fa')
+  const [isEnabled, setIsEnabled] = useState(i18n.language === 'fa');
+
   const toggleSwitch = () => {
-    setIsEnabled(previousState => !previousState)
-    const newLang = isEnabled ? 'en' : 'fa'
-    i18n.changeLanguage(newLang)
-  }
+    setIsEnabled((previousState) => !previousState);
+    const newLang = isEnabled ? 'en' : 'fa';
+    i18n.changeLanguage(newLang);
+  };
 
   useEffect(() => {
     const handleLangChange = () => {
-      setIsEnabled(i18n.language === 'fa')
-    }
+      setIsEnabled(i18n.language === 'fa');
+    };
 
-    i18n.on('languageChanged', handleLangChange)
+    i18n.on('languageChanged', handleLangChange);
     return () => {
-      i18n.off('languageChanged', handleLangChange)
-    }
-  }, [])
-
-  const Form = () => {
-    const [godName, setGodName] = useState('')
-    const [numberOfPlayers, setNumberOfPlayers] = useState('')
-
-    const handleSubmit = () => {
-      // Call the Firestore function to create a new game document
-      addNewGameToFirestore(godName, numberOfPlayers)
-        .then(gameID => {
-          console.log(`Game ID: ${gameID} created successfully`)
-        })
-        .catch(error => {
-          console.error('Error creating game:', error)
-        })
-    }
-
-    return (
-      <>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>{i18n.t('nameOfGodLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={i18n.t('nameOfGodLabel')}
-            placeholderTextColor="white"
-            value={godName}
-            onChangeText={text => setGodName(text)}
-          />
-          <Text style={styles.label}>{i18n.t('numberOfPlayers')}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={i18n.t('numberOfPlayers')}
-            placeholderTextColor="white"
-            keyboardType="numeric"
-            value={numberOfPlayers}
-            onChangeText={text => setNumberOfPlayers(text)}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>{i18n.t('createNewGame')}</Text>
-          </TouchableOpacity>
-        </View>
-      </>
-    )
-  }
+      i18n.off('languageChanged', handleLangChange);
+    };
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.languageSwitch}>
-        <Text style={styles.flag}>🇬🇧</Text>
-        <Switch
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-        <Text style={styles.flag}>🇮🇷</Text>
-      </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          header: ({ route }) => (
+            <CustomHeader
+              route={route}
+              isEnabled={isEnabled}
+              toggleSwitch={toggleSwitch}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen name="start" component={StartPage} />
+        <Stack.Screen name="game" component={RolesPage} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-      <Image
-        source={require('./assets/mafia-silhouette.jpeg')}
-        style={styles.logo}
-      />
-      <Form />
-    </View>
-  )
-}
-
-export default App
+export default App;

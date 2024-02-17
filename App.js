@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import CustomHeader from './src/components/CustomHeader';
-import RolesPage from './src/components/RolesPage';
+import GamePage from './src/components/GamePage';
 import StartPage from './src/components/StartPage';
 import i18n from './src/utilities/i18n'; // Updated path
 
@@ -16,6 +16,14 @@ const App = () => {
     const newLang = isEnabled ? 'en' : 'fa';
     i18n.changeLanguage(newLang);
   };
+
+  const renderCustomHeader = ({ route }) => (
+    <CustomHeader
+      route={route}
+      isEnabled={isEnabled}
+      toggleSwitch={toggleSwitch}
+    />
+  );
 
   useEffect(() => {
     const handleLangChange = () => {
@@ -32,17 +40,11 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          header: ({ route }) => (
-            <CustomHeader
-              route={route}
-              isEnabled={isEnabled}
-              toggleSwitch={toggleSwitch}
-            />
-          ),
+          header: renderCustomHeader,
         }}
       >
         <Stack.Screen name="start" component={StartPage} />
-        <Stack.Screen name="game" component={RolesPage} />
+        <Stack.Screen name="game" component={GamePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

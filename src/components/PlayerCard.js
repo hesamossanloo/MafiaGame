@@ -1,6 +1,5 @@
-
-import * as React from 'react';
-import { Card, Title, Paragraph } from 'react-native-paper';
+import * as React from "react";
+import { Card, Title, Paragraph } from "react-native-paper";
 
 const PlayerCard = ({ name, avatar, status }) => (
   <Card>

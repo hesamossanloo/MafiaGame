@@ -1,5 +1,9 @@
 {
-    "nameOfGodLabel": "Enter God's Name",
-    "toggleLang": "فارسی"
+  "nameOfGodLabel": "Enter God's Name",
+  "toggleLang": "فارسی",
+  "createNewGame": "Create a new game",
+  "numberOfPlayers": "Enter the Number of Players",
+  "numberOfPlayersRequired": "Please enter the God's Name",
+  "startPageTitle": "Start Page",
+  "rolesPageTitle": "Roles Page"
 }
-  

@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, TextInput, Text, Switch } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import CustomHeader from './src/components/CustomHeader';
+import RolesPage from './src/components/RolesPage';
+import StartPage from './src/components/StartPage';
 import i18n from './src/utilities/i18n'; // Updated path
-import styles from './AppStyles'; // Adjust the path as needed
+
+const Stack = createStackNavigator();
 
 const App = () => {
   const [isEnabled, setIsEnabled] = useState(i18n.language === 'fa');
+
   const toggleSwitch = () => {
-    setIsEnabled(previousState => !previousState);
+    setIsEnabled((previousState) => !previousState);
     const newLang = isEnabled ? 'en' : 'fa';
     i18n.changeLanguage(newLang);
   };
@@ -23,30 +29,23 @@ const App = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {/* Language Switch positioned at the top right */}
-      <View style={styles.languageSwitch}>
-        <Text style={styles.flag}>🇬🇧</Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-        <Text style={styles.flag}>🇮🇷</Text>
-      </View>
-
-      <Image source={require('./assets/mafia-silhouette.jpeg')} style={styles.logo} />
-      <Text style={styles.label}>{i18n.t('nameOfGodLabel')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={i18n.t('nameOfGodLabel')}
-        placeholderTextColor="white"
-      />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          header: ({ route }) => (
+            <CustomHeader
+              route={route}
+              isEnabled={isEnabled}
+              toggleSwitch={toggleSwitch}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen name="start" component={StartPage} />
+        <Stack.Screen name="game" component={RolesPage} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
 export default App;
-

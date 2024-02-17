@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-const Popup = ({ onRequestClose }) => {
+const GamePopup = ({ onRequestClose }) => {
   const [playerName, setPlayerName] = useState('');
   const [gameID, setGameID] = useState('');
 
@@ -101,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Popup;
+export default GamePopup;

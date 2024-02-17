@@ -6,5 +6,5 @@ export const createGame = (gameName, numberOfPlayers) => {
     gameFinished: false,
     alivePlayers: [],
     deadPlayers: [],
-  }
-}
+  };
+};

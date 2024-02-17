@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Switch, Text, View } from 'react-native';
 import styles from '../../AppStyles';
 
-const CustomHeader = (route, isEnabled, toggleSwitch) => {
+const CustomHeader = ({ route, isEnabled, toggleSwitch }) => {
   const { t } = useTranslation();
 
   let title;
@@ -18,19 +18,19 @@ const CustomHeader = (route, isEnabled, toggleSwitch) => {
     default:
       title = 'Mafia Game';
   }
+  const containerStyle = {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  };
+  const rowStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+  };
   return (
-    <View
-      style={[
-        styles.languageSwitch,
-        {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        },
-      ]}
-    >
+    <View style={[styles.languageSwitch, containerStyle]}>
       <Text style={styles.headerTitle}>{title}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={rowStyle}>
         <Text style={styles.flag}>🇬🇧</Text>
         <Switch
           trackColor={{ false: '#767577', true: '#81b0ff' }}

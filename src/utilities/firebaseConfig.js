@@ -6,7 +6,7 @@ import {
   MESSAGING_SENDER_ID,
   PROJECT_ID,
   STORAGE_BUCKET,
-} from '@env'
+} from '@env';
 // Firebase v9+ modular SDK initialization for web
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
@@ -20,10 +20,10 @@ const firebaseConfig = {
   storageBucket: STORAGE_BUCKET,
   messagingSenderId: MESSAGING_SENDER_ID,
   appId: APP_ID,
-}
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export default db
+export default db;

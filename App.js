@@ -29,7 +29,6 @@ const App = () => {
     const handleLangChange = () => {
       setIsEnabled(i18n.language === 'fa');
     };
-
     i18n.on('languageChanged', handleLangChange);
     return () => {
       i18n.off('languageChanged', handleLangChange);

@@ -1,5 +1,5 @@
 // AppStyles.js
-import { StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native';
 
 const inputStyle = {
   height: 40,
@@ -10,7 +10,7 @@ const inputStyle = {
   borderColor: 'gray',
   borderRadius: 5,
   backgroundColor: 'rgba(255, 255, 255, 0.2)',
-}
+};
 
 export default StyleSheet.create({
   container: {
@@ -74,4 +74,4 @@ export default StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-})
+});

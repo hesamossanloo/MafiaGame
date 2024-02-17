@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import styles from '../../AppStyles';
-import Popup from './GamePopup';
+import GamePopup from './GamePopup';
 
 const GamePage = ({ route }) => {
   const { gameID } = route.params;
@@ -19,7 +19,7 @@ const GamePage = ({ route }) => {
     <View style={styles.container}>
       <Text>Roles and Players Page</Text>
       <Text>Game ID: {gameID}</Text>
-      {showPopup && <Popup onRequestClose={() => setShowPopup(false)} />}
+      {showPopup && <GamePopup onRequestClose={() => setShowPopup(false)} />}
     </View>
   );
 };

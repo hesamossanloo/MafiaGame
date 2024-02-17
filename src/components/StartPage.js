@@ -67,6 +67,7 @@ const StartPage = ({ navigation }) => {
           value={numberOfPlayers}
           onChangeText={(text) => setNumberOfPlayers(text)}
         />
+        {godNameError ? <Text style={styles.error}>{godNameError}</Text> : null}
         {numberOfPlayersError ? (
           <Text style={styles.error}>{numberOfPlayersError}</Text>
         ) : null}

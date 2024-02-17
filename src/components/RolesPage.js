@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import styles from '../../AppStyles';
-import Popup from './Popup'; // Adjust the import path as needed
+import PopUp from './PopUp';
 
 const RolesPage = ({ route }) => {
   const { gameID } = route.params;
@@ -19,7 +19,7 @@ const RolesPage = ({ route }) => {
     <View style={styles.container}>
       <Text>Roles and Players Page</Text>
       <Text>Game ID: {gameID}</Text>
-      {showPopup && <Popup onRequestClose={() => setShowPopup(false)} />}
+      {showPopup && <PopUp onRequestClose={() => setShowPopup(false)} />}
     </View>
   );
 };

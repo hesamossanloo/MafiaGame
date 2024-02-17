@@ -1,32 +1,16 @@
-// .eslintrc.js
 module.exports = {
-  parser: 'babel-eslint',
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:prettier/recommended',
-  ],
-  plugins: ['react', 'prettier'],
-  env: {
-    es6: true,
-    node: true,
-    browser: true,
-  },
+  root: true,
+  extends: ['@react-native-community', 'plugin:prettier/recommended'],
+  plugins: ['react', 'react-native', 'prettier'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
-    sourceType: 'module',
+  },
+  env: {
+    'react-native/react-native': true,
   },
   rules: {
     'prettier/prettier': 'error',
-    'no-undef': 'error', // Add this line
-    // Add other custom ESLint rules here
-  },
-  settings: {
-    react: {
-      version: 'detect',
-    },
   },
 };

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import styles from '../../AppStyles';
-import PopUp from './PopUp';
+import Popup from './GamePopup';
 
-const RolesPage = ({ route }) => {
+const GamePage = ({ route }) => {
   const { gameID } = route.params;
   const [showPopup, setShowPopup] = useState(false);
 
@@ -19,9 +19,9 @@ const RolesPage = ({ route }) => {
     <View style={styles.container}>
       <Text>Roles and Players Page</Text>
       <Text>Game ID: {gameID}</Text>
-      {showPopup && <PopUp onRequestClose={() => setShowPopup(false)} />}
+      {showPopup && <Popup onRequestClose={() => setShowPopup(false)} />}
     </View>
   );
 };
 
-export default RolesPage;
+export default GamePage;

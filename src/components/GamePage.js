@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
-import styles from '../../AppStyles';
+import styles from './GamePageStyles';
 import GamePopup from './GamePopup';
 
 const GamePage = ({ route }) => {
@@ -16,10 +16,14 @@ const GamePage = ({ route }) => {
   }, [gameID]);
 
   return (
-    <View style={styles.container}>
-      <Text>Roles and Players Page</Text>
-      <Text>Game ID: {gameID}</Text>
-      {showPopup && <GamePopup onRequestClose={() => setShowPopup(false)} />}
+    <View style={styles.gamePageContainer}>
+      {gameID && (
+        <>
+          <Text style={styles.text}>Roles and Players Page</Text>
+          <Text style={styles.text}>Game ID: {gameID}</Text>
+        </>
+      )}
+      {showPopup && <GamePopup gameID onRequestClose={() => setShowPopup(false)} />}
     </View>
   );
 };

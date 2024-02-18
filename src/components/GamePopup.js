@@ -8,15 +8,17 @@ import {
   View,
 } from 'react-native';
 
-const GamePopup = ({ onRequestClose }) => {
+const GamePopup = ({ onRequestClose }, gameID) => {
   const [playerName, setPlayerName] = useState('');
-  const [gameID, setGameID] = useState('');
+  const [enteredGameID, setEnteredGameID] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = () => {
-    // Here, you can handle the submission of the player's name
-    // For example, send it to Firestore or manage it within the app's state
-    console.log('Player Name:', playerName);
-    console.log('GameID: :', gameID);
+    if (gameID !== enteredGameID) {
+      setErrorMessage('Entered GameID does not match the expected GameID.');
+      return;
+    }
+
     onRequestClose(); // Close the popup after submission
   };
 
@@ -40,11 +42,15 @@ const GamePopup = ({ onRequestClose }) => {
           <Text style={styles.modalText}>Enter the Game ID</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setGameID}
+            onChangeText={setEnteredGameID}
             value={playerName}
             placeholder="Game ID"
             placeholderTextColor="#999"
           />
+          {errorMessage && (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          )}
+
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.textStyle}>Submit</Text>
           </TouchableOpacity>
@@ -98,6 +104,9 @@ const styles = StyleSheet.create({
     width: 200,
     borderRadius: 5,
     borderColor: '#ddd',
+  },
+  errorMessage: {
+    color: 'red',
   },
 });
 

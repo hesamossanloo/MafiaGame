@@ -8,16 +8,28 @@ import {
   View,
 } from 'react-native';
 
-const GamePopup = ({ onRequestClose }, gameID) => {
+const GamePopup = ({
+  onRequestClose,
+  origGameID,
+  callBackSetEnteredGame,
+  callBackSetEnteredName,
+}) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = () => {
-    if (gameID !== enteredGameID) {
+    if (!enteredGameID) {
+      setErrorMessage('Please enter the players name!');
+      return;
+    }
+    if (origGameID !== enteredGameID) {
       setErrorMessage('Entered GameID does not match the expected GameID.');
       return;
     }
+    setEnteredGameID(enteredGameID);
+    callBackSetEnteredGame(enteredGameID);
+    callBackSetEnteredName(playerName);
 
     onRequestClose(); // Close the popup after submission
   };
@@ -43,7 +55,7 @@ const GamePopup = ({ onRequestClose }, gameID) => {
           <TextInput
             style={styles.input}
             onChangeText={setEnteredGameID}
-            value={playerName}
+            value={enteredGameID}
             placeholder="Game ID"
             placeholderTextColor="#999"
           />
@@ -107,6 +119,7 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
+    marginBottom: 10,
   },
 });
 

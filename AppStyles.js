@@ -2,13 +2,15 @@
 import { StyleSheet } from 'react-native';
 
 const copyButton = {
-  backgroundColor: 'rgba(128, 128, 128, 0.5)',
+  // backgroundColor: 'rgba(128, 128, 128, 0.5)',
   borderRadius: 5,
   marginLeft: 10, // Add some space between the input and the button
   justifyContent: 'center',
   alignItems: 'center',
   width: 40, // Adjust based on your preference
   height: 40, // Adjust based on your preference
+  borderColor: 'black', // Add a black border
+  borderWidth: 2,
 };
 const inputStyle = {
   height: 40,
@@ -36,7 +38,7 @@ const modalContainer = {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: 'rgba((242, 8, 8 0.8)', // Semi-transparent background
+  backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent background
 };
 const modalContent = {
   backgroundColor: 'red',

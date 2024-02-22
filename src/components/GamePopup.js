@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   StyleSheet,
@@ -17,14 +18,15 @@ const GamePopup = ({
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { t } = useTranslation();
 
   const handleSubmit = () => {
     if (!enteredGameID) {
-      setErrorMessage('Please enter the players name!');
+      setErrorMessage(t('errorPlayerName'));
       return;
     }
     if (origGameID !== enteredGameID) {
-      setErrorMessage('Entered GameID does not match the expected GameID.');
+      setErrorMessage(t('errorGameID'));
       return;
     }
     setEnteredGameID(enteredGameID);
@@ -43,20 +45,20 @@ const GamePopup = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Enter Your Name</Text>
+          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
           <TextInput
             style={styles.input}
             onChangeText={setPlayerName}
             value={playerName}
-            placeholder="Name"
+            placeholder={t('name')}
             placeholderTextColor="#999"
           />
-          <Text style={styles.modalText}>Enter the Game ID</Text>
+          <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
           <TextInput
             style={styles.input}
             onChangeText={setEnteredGameID}
             value={enteredGameID}
-            placeholder="Game ID"
+            placeholder={t('gamePageGameID')}
             placeholderTextColor="#999"
           />
           {errorMessage && (
@@ -64,7 +66,7 @@ const GamePopup = ({
           )}
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.textStyle}>Submit</Text>
+            <Text style={styles.textStyle}>{t('submit')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -5,5 +5,13 @@
   "numberOfPlayers": "Enter the Number of Players",
   "numberOfPlayersRequired": "Please enter the God's Name",
   "startPageTitle": "Start Page",
+  "gamePagePlayerName": "Player's Name",
+  "gamePageGameID": "Game ID",
+  "name": "Name",
+  "gamePopEnterName": "Enter Your Name",
+  "gamePopGameID": "Enter The Game ID",
+  "errorPlayerName": "Please enter the players name!",
+  "errorGameID": "Entered GameID does not match the expected GameID!",
+  "submit": "Submit",
   "rolesPageTitle": "Roles Page"
 }

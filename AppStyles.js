@@ -65,7 +65,7 @@ export default StyleSheet.create({
     backgroundColor: 'red',
   },
   flag: {
-    fontSize: 32, // Adjust based on your preference
+    fontSize: 29, // Adjust based on your preference
   },
   logo: {
     width: 250,

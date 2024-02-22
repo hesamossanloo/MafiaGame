@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import styles from './GamePageStyles';
 import GamePopup from './GamePopup';
@@ -9,33 +9,43 @@ const GamePage = ({ route }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [enteredGameID, setEnteredGameID] = useState(null);
   const [playerName, setPlayerName] = useState(null);
-  const navigation = useNavigation();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      if (e.data.action.type === 'POP') {
-        // Prevent navigation back to StartPage on refresh
-        navigation.navigate(e.data.route.name); // Stay on GamePage
-      }
-    });
+    // Attempt to read enteredGameID, player's name and its confirmation state from local storage
+    const storedGameID = window.localStorage.getItem('enteredGameID');
+    const storedPlayerName = window.localStorage.getItem('playerName');
+    const isConfirmed =
+      window.localStorage.getItem('isGameIDConfirmed') === 'true'; // Ensure to compare with string 'true'
 
-    return () => unsubscribe();
-  }, [navigation]);
-
-  useEffect(() => {
-    // Example logic to decide if the popup should be shown
-    // This could be expanded based on how you verify active game sessions
-    if (gameID && !enteredGameID) {
-      setShowPopup(true);
+    if (storedGameID && isConfirmed && storedGameID === gameID) {
+      setEnteredGameID(storedGameID);
+      setPlayerName(storedPlayerName);
+      setShowPopup(false); // If confirmed and matches, don't show popup
+    } else {
+      setShowPopup(true); // Otherwise, show popup to enter gameID
     }
-  }, [gameID, enteredGameID]);
+  }, [gameID]);
+
+  useEffect(() => {
+    if (enteredGameID === gameID) {
+      // Save enteredGameID and its confirmation state to local storage
+      window.localStorage.setItem('enteredGameID', enteredGameID);
+      window.localStorage.setItem('playerName', playerName);
+      window.localStorage.setItem('isGameIDConfirmed', 'true');
+    }
+  }, [enteredGameID, gameID, playerName]);
 
   return (
     <View style={styles.gamePageContainer}>
       {enteredGameID && (
         <>
-          <Text style={styles.text}>Player's Name: {playerName}</Text>
-          <Text style={styles.text}>Game ID: {gameID}</Text>
+          <Text style={styles.text}>
+            {t('gamePagePlayerName')}: {playerName}
+          </Text>
+          <Text style={styles.text}>
+            {t('gamePageGameID')}: {gameID}
+          </Text>
         </>
       )}
       {showPopup && (

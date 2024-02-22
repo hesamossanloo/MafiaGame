@@ -8,10 +8,14 @@
   "gamePagePlayerName": "Player's Name",
   "gamePageGameID": "Game ID",
   "name": "Name",
+  "continue": "Continue",
+  "joinGame": "Join a Game.",
   "gamePopEnterName": "Enter Your Name",
   "gamePopGameID": "Enter The Game ID",
   "errorPlayerName": "Please enter the players name!",
-  "errorGameID": "Entered GameID does not match the expected GameID!",
+  "errorGameID": "Entered Game ID does not match the expected Game ID!",
   "submit": "Submit",
+  "playerTitle": "You are a Player!",
+  "godTitle": "You are the GOD!",
   "rolesPageTitle": "Roles Page"
 }

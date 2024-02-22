@@ -22,7 +22,7 @@ const StartPage = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [newGameID, setNewGameID] = useState('');
 
-  const handleSubmit = () => {
+  const handleNewGame = () => {
     let isValid = true;
 
     if (!godName || godName === '') {
@@ -52,6 +52,13 @@ const StartPage = ({ navigation }) => {
     }
   };
 
+  const handleJoinGame = () => {
+    setShowModal(false);
+    navigation.navigate('game', {
+      gameID: 'join',
+    });
+  };
+
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(newGameID);
   };
@@ -61,6 +68,10 @@ const StartPage = ({ navigation }) => {
     navigation.navigate('game', {
       gameID: newGameID,
     });
+  };
+
+  const btnJoin = {
+    marginTop: 15,
   };
 
   return (
@@ -95,8 +106,14 @@ const StartPage = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <TouchableOpacity style={styles.button} onPress={handleNewGame}>
           <Text style={styles.buttonText}>{t('createNewGame')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, btnJoin]}
+          onPress={handleJoinGame}
+        >
+          <Text style={styles.buttonText}>{t('joinGame')}</Text>
         </TouchableOpacity>
       </View>
       <Modal visible={showModal} transparent={true}>
@@ -120,7 +137,7 @@ const StartPage = ({ navigation }) => {
               style={styles.modalButton}
               onPress={handleContinue}
             >
-              <Text style={styles.buttonText}>Continue</Text>
+              <Text style={styles.buttonText}>{t('continue')}</Text>
             </TouchableOpacity>
           </View>
         </View>

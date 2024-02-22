@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   StyleSheet,
@@ -8,15 +9,30 @@ import {
   View,
 } from 'react-native';
 
-const GamePopup = ({ onRequestClose }) => {
+const GamePopup = ({
+  onRequestClose,
+  origGameID,
+  callBackSetEnteredGame,
+  callBackSetEnteredName,
+}) => {
   const [playerName, setPlayerName] = useState('');
-  const [gameID, setGameID] = useState('');
+  const [enteredGameID, setEnteredGameID] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const { t } = useTranslation();
 
   const handleSubmit = () => {
-    // Here, you can handle the submission of the player's name
-    // For example, send it to Firestore or manage it within the app's state
-    console.log('Player Name:', playerName);
-    console.log('GameID: :', gameID);
+    if (!enteredGameID) {
+      setErrorMessage(t('errorPlayerName'));
+      return;
+    }
+    if (origGameID !== enteredGameID) {
+      setErrorMessage(t('errorGameID'));
+      return;
+    }
+    setEnteredGameID(enteredGameID);
+    callBackSetEnteredGame(enteredGameID);
+    callBackSetEnteredName(playerName);
+
     onRequestClose(); // Close the popup after submission
   };
 
@@ -29,24 +45,28 @@ const GamePopup = ({ onRequestClose }) => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Enter Your Name</Text>
+          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
           <TextInput
             style={styles.input}
             onChangeText={setPlayerName}
             value={playerName}
-            placeholder="Name"
+            placeholder={t('name')}
             placeholderTextColor="#999"
           />
-          <Text style={styles.modalText}>Enter the Game ID</Text>
+          <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setGameID}
-            value={playerName}
-            placeholder="Game ID"
+            onChangeText={setEnteredGameID}
+            value={enteredGameID}
+            placeholder={t('gamePageGameID')}
             placeholderTextColor="#999"
           />
+          {errorMessage && (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          )}
+
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.textStyle}>Submit</Text>
+            <Text style={styles.textStyle}>{t('submit')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -98,6 +118,10 @@ const styles = StyleSheet.create({
     width: 200,
     borderRadius: 5,
     borderColor: '#ddd',
+  },
+  errorMessage: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

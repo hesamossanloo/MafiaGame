@@ -7,9 +7,35 @@ import StartPage from './src/components/StartPage';
 import i18n from './src/utilities/i18n'; // Updated path
 
 const Stack = createStackNavigator();
+const PERSISTENCE_KEY = 'NAVIGATION_STATE';
 
 const App = () => {
   const [isEnabled, setIsEnabled] = useState(i18n.language === 'fa');
+  const [initialNavigationState, setInitialNavigationState] = useState();
+
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const restoreState = async () => {
+      try {
+        const savedStateString = window.localStorage.getItem(PERSISTENCE_KEY);
+        const state = savedStateString
+          ? JSON.parse(savedStateString)
+          : undefined;
+        if (state !== undefined) {
+          setInitialNavigationState(state);
+        }
+      } catch (e) {
+        console.error('Failed to load navigation state', e);
+      } finally {
+        setIsReady(true);
+      }
+    };
+
+    if (!isReady) {
+      restoreState();
+    }
+  }, [isReady]);
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
@@ -35,8 +61,16 @@ const App = () => {
     };
   }, []);
 
+  if (!isReady) {
+    return null; // or your loading indicator
+  }
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      initialState={initialNavigationState}
+      onStateChange={(state) =>
+        window.localStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+      }
+    >
       <Stack.Navigator
         screenOptions={{
           header: renderCustomHeader,

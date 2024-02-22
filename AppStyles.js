@@ -1,6 +1,17 @@
 // AppStyles.js
 import { StyleSheet } from 'react-native';
 
+const copyButton = {
+  // backgroundColor: 'rgba(128, 128, 128, 0.5)',
+  borderRadius: 5,
+  marginLeft: 10, // Add some space between the input and the button
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 40, // Adjust based on your preference
+  height: 40, // Adjust based on your preference
+  borderColor: 'black', // Add a black border
+  borderWidth: 2,
+};
 const inputStyle = {
   height: 40,
   width: '100%',
@@ -11,14 +22,41 @@ const inputStyle = {
   borderRadius: 5,
   backgroundColor: 'rgba(255, 255, 255, 0.2)',
 };
+const button = {
+  backgroundColor: 'red',
+  padding: 10,
+  borderRadius: 5,
+};
+const container = {
+  flex: 1,
+  backgroundColor: '#000',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 20, // Container padding
+};
+const modalContainer = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent background
+};
+const modalContent = {
+  backgroundColor: 'red',
+  padding: 20,
+  borderRadius: 5,
+  width: '80%', // Take up 80% of the screen width
+  alignItems: 'stretch',
+};
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20, // Container padding
+    ...container,
+  },
+  modalContainer: {
+    ...modalContainer,
+  },
+  modalContent: {
+    ...modalContent,
   },
   languageSwitch: {
     flexDirection: 'row',
@@ -27,7 +65,7 @@ export default StyleSheet.create({
     backgroundColor: 'red',
   },
   flag: {
-    fontSize: 32, // Adjust based on your preference
+    fontSize: 29, // Adjust based on your preference
   },
   logo: {
     width: 250,
@@ -57,9 +95,16 @@ export default StyleSheet.create({
     marginTop: 25,
   },
   button: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
+    ...button,
+  },
+  modalButton: { ...button, backgroundColor: 'black' },
+  modalInputCopyContainer: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    marginBottom: 10,
+  },
+  copyButton: {
+    ...copyButton,
   },
   buttonText: {
     color: 'white',

@@ -5,5 +5,17 @@
   "numberOfPlayers": "تعداد بازیکنان را وارد کنید",
   "numberOfPlayersRequired": "لطفاً نام خدا را وارد کنید",
   "startPageTitle": "صفحه شروع",
+  "gamePagePlayerName": "نام بازیکن",
+  "gamePageGameID": "شناسه بازی",
+  "name": "نام",
+  "continue": "ادامه",
+  "joinGame": "پیوستن به یک بازی",
+  "gamePopEnterName": "نام خود را وارد کنید",
+  "gamePopGameID": "شناسه بازی را وارد کنید",
+  "errorPlayerName": "لطفاً نام بازیکن را وارد کنید",
+  "errorGameID": "شناسه بازی وارد شده با شناسه مورد انتظار مطابقت ندارد!",
+  "submit": "ارسال",
+  "playerTitle": "!شما یک بازیکن هستید",
+  "godTitle": "!شما خدا هستید",
   "rolesPageTitle": "صفحه نقش‌ها"
 }

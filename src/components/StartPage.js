@@ -1,17 +1,28 @@
+import { Feather } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import styles from '../../AppStyles';
 import { addNewGameToFirestore } from '../../src/utilities/firestoreService';
 
 const StartPage = ({ navigation }) => {
+  const { t } = useTranslation();
   const [godName, setGodName] = useState('Hesi');
   const [numberOfPlayers, setNumberOfPlayers] = useState(10);
   const [godNameError, setGodNameError] = useState('');
   const [numberOfPlayersError, setNumberOfPlayersError] = useState('');
-  const { t } = useTranslation();
+  const [showModal, setShowModal] = useState(false);
+  const [newGameID, setNewGameID] = useState('');
 
-  const handleSubmit = () => {
+  const handleNewGame = () => {
     let isValid = true;
 
     if (!godName || godName === '') {
@@ -31,15 +42,36 @@ const StartPage = ({ navigation }) => {
     if (isValid) {
       // Call the Firestore function to create a new game document
       addNewGameToFirestore(godName, numberOfPlayers)
-        .then((newGameID) => {
-          navigation.navigate('game', {
-            gameID: newGameID,
-          });
+        .then((gameID) => {
+          setNewGameID(gameID);
+          setShowModal(true);
         })
         .catch((error) => {
           console.error('Error creating game:', error);
         });
     }
+  };
+
+  const handleJoinGame = () => {
+    setShowModal(false);
+    navigation.navigate('game', {
+      gameID: 'join',
+    });
+  };
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(newGameID);
+  };
+
+  const handleContinue = () => {
+    setShowModal(false);
+    navigation.navigate('game', {
+      gameID: newGameID,
+    });
+  };
+
+  const btnJoin = {
+    marginTop: 15,
   };
 
   return (
@@ -74,10 +106,42 @@ const StartPage = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <TouchableOpacity style={styles.button} onPress={handleNewGame}>
           <Text style={styles.buttonText}>{t('createNewGame')}</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, btnJoin]}
+          onPress={handleJoinGame}
+        >
+          <Text style={styles.buttonText}>{t('joinGame')}</Text>
+        </TouchableOpacity>
       </View>
+      <Modal visible={showModal} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalInputCopyContainer}>
+              <TextInput
+                style={styles.input}
+                value={newGameID}
+                editable={false}
+              />
+              <TouchableOpacity
+                style={styles.copyButton}
+                onPress={copyToClipboard}
+              >
+                <Feather name="copy" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleContinue}
+            >
+              <Text style={styles.buttonText}>{t('continue')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

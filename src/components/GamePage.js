@@ -12,6 +12,10 @@ const GamePage = ({ route }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    // Clear local storage when the browser or tab is closed
+    window.onbeforeunload = () => {
+      window.localStorage.clear();
+    };
     // Attempt to read enteredGameID, player's name and its confirmation state from local storage
     const storedGameID = window.localStorage.getItem('enteredGameID');
     const storedPlayerName = window.localStorage.getItem('playerName');
@@ -25,6 +29,10 @@ const GamePage = ({ route }) => {
     } else {
       setShowPopup(true); // Otherwise, show popup to enter gameID
     }
+    // Cleanup the event listener
+    return () => {
+      window.onbeforeunload = null;
+    };
   }, [gameID]);
 
   useEffect(() => {

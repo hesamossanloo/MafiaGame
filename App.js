@@ -16,6 +16,10 @@ const App = () => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Clear local storage when the browser or tab is closed
+    window.onbeforeunload = () => {
+      window.localStorage.clear();
+    };
     const restoreState = async () => {
       try {
         const savedStateString = window.localStorage.getItem(PERSISTENCE_KEY);
@@ -35,6 +39,10 @@ const App = () => {
     if (!isReady) {
       restoreState();
     }
+    // Cleanup the event listener
+    return () => {
+      window.onbeforeunload = null;
+    };
   }, [isReady]);
 
   const toggleSwitch = () => {

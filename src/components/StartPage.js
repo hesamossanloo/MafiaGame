@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import styles from '../../AppStyles';
-import { addNewGameToFirestore } from '../../src/utilities/firestoreService';
+import { addNewGameToFirestore } from '../utilities/firestoreService';
 
 const StartPage = ({ navigation }) => {
   const { t } = useTranslation();

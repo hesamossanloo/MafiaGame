@@ -8,31 +8,34 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { docExists } from '../utilities/firestoreService';
 
 const GamePopup = ({
   onRequestClose,
-  origGameID,
-  callBackSetEnteredGame,
-  callBackSetEnteredName,
+  callBackSetEnteredGameID,
+  callBackSetEnteredPlayerName,
+  callBackSetGameExists,
 }) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!enteredGameID) {
       setErrorMessage(t('errorPlayerName'));
       return;
     }
-    if (origGameID !== enteredGameID) {
+    // Check if the GameID exists in the DB
+    const gameExists = await docExists(enteredGameID);
+    if (!gameExists) {
       setErrorMessage(t('errorGameID'));
       return;
     }
     setEnteredGameID(enteredGameID);
-    callBackSetEnteredGame(enteredGameID);
-    callBackSetEnteredName(playerName);
-
+    callBackSetEnteredGameID(enteredGameID);
+    callBackSetEnteredPlayerName(playerName);
+    callBackSetGameExists(gameExists);
     onRequestClose(); // Close the popup after submission
   };
 

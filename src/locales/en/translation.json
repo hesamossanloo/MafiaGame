@@ -15,7 +15,7 @@
   "errorPlayerName": "Please enter the players name!",
   "errorGameID": "Entered Game ID does not match the expected Game ID!",
   "submit": "Submit",
-  "playerTitle": "You are a Player!",
-  "godTitle": "You are the GOD!",
+  "playerTitle": "You are a Player and not the God!",
+  "godTitle": "You are the God!",
   "rolesPageTitle": "Roles Page"
 }

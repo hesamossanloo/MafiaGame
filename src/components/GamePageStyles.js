@@ -17,5 +17,8 @@ export default StyleSheet.create({
   },
   text: {
     color: 'white',
+    marginBottom: 10,
   },
+  table: { border: '1px solid white', padding: '5px', minWidth: '50%' },
+  tableRows: { border: '1px solid white', padding: '5px' },
 });

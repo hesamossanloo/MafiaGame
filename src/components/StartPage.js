@@ -3,6 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Dimensions,
   Image,
   Modal,
   Text,
@@ -12,6 +13,10 @@ import {
 } from 'react-native';
 import styles from '../../AppStyles';
 import { addNewGameToFirestore } from '../utilities/firestoreService';
+
+// Get screen width and height
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const StartPage = ({ navigation }) => {
   const { t } = useTranslation();
@@ -78,7 +83,10 @@ const StartPage = ({ navigation }) => {
     <View style={styles.container}>
       <Image
         source={require('../../assets/mafia-silhouette.jpeg')}
-        style={styles.logo}
+        style={[
+          styles.logo,
+          { width: screenWidth * 0.8, height: screenHeight * 0.3 },
+        ]}
       />
 
       <View style={styles.inputContainer}>

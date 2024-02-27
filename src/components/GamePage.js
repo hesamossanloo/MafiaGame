@@ -40,7 +40,7 @@ const GamePage = ({ route }) => {
 
   return (
     <View style={styles.gamePageContainer}>
-      <Text style={styles.text}>
+      <Text style={styles.title}>
         {gameID === 'join' ? t('playerTitle') : t('godTitle')}
       </Text>
       {enteredGameID && (

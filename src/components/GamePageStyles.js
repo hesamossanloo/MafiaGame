@@ -15,9 +15,11 @@ export default StyleSheet.create({
     ...container,
     ...gamePageContainer,
   },
-  text: {
+  title: {
+    fontWeight: '700',
+    fontSize: '24px',
     color: 'white',
-    marginBottom: 10,
+    marginBottom: 30,
   },
   table: { border: '1px solid white', padding: '5px', minWidth: '50%' },
   tableRows: { border: '1px solid white', padding: '5px' },

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Switch, Text, View } from 'react-native';
+import { Switch, Text, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import styles from '../../AppStyles';
 
 const CustomHeader = ({ route, isEnabled, toggleSwitch }) => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
 
   let title;
   switch (route.name) {
@@ -35,8 +38,20 @@ const CustomHeader = ({ route, isEnabled, toggleSwitch }) => {
   const flagStyle2 = {
     marginLeft: 5, // Add this
   };
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  if (route.name === 'start') {
+    return null; // Do not render the header on the start page
+  }
+
   return (
     <View style={[styles.languageSwitch, containerStyle]}>
+      <TouchableOpacity onPress={handleBackPress}>
+        <Ionicons name="arrow-back" size={30} color="black" />
+      </TouchableOpacity>
       <Text style={styles.headerTitle}>{title}</Text>
       <View style={rowStyle}>
         <Text style={[styles.flag, flagStyle]}>🇬🇧</Text>

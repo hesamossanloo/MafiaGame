@@ -50,6 +50,7 @@ const StartPage = ({ navigation }) => {
         .then((gameID) => {
           setNewGameID(gameID);
           setShowModal(true);
+          setLocalStorage(gameID, godName);
         })
         .catch((error) => {
           console.error('Error creating game:', error);
@@ -57,8 +58,20 @@ const StartPage = ({ navigation }) => {
     }
   };
 
+  const setLocalStorage = (_gameID, _name) => {
+    window.localStorage.setItem('enteredGameID', _gameID);
+    window.localStorage.setItem('playerName', _name);
+    window.localStorage.setItem('isGameIDConfirmed', 'true');
+  };
+  const clearLocalStorage = () => {
+    window.localStorage.removeItem('enteredGameID');
+    window.localStorage.removeItem('playerName');
+    window.localStorage.removeItem('isGameIDConfirmed');
+  };
+
   const handleJoinGame = () => {
     setShowModal(false);
+    clearLocalStorage();
     navigation.navigate('game', {
       gameID: 'join',
     });

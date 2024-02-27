@@ -30,21 +30,24 @@ const GamePage = ({ route }) => {
   }, [gameID]);
 
   useEffect(() => {
-    if (gameExists) {
+    if (gameExists && enteredGameID && playerName) {
+      setShowPopup(false);
       // Save enteredGameID and its confirmation state to local storage
       window.localStorage.setItem('enteredGameID', enteredGameID);
       window.localStorage.setItem('playerName', playerName);
       window.localStorage.setItem('isGameIDConfirmed', 'true');
+    } else {
+      setShowPopup(true);
     }
   }, [enteredGameID, gameID, playerName, gameExists]);
 
   return (
     <View style={styles.gamePageContainer}>
-      <Text style={styles.title}>
-        {gameID === 'join' ? t('playerTitle') : t('godTitle')}
-      </Text>
       {enteredGameID && (
         <>
+          <Text style={styles.title}>
+            {gameID === 'join' ? t('playerTitle') : t('godTitle')}
+          </Text>
           <table style={styles.table}>
             <tbody>
               <tr>
@@ -53,7 +56,7 @@ const GamePage = ({ route }) => {
               </tr>
               <tr>
                 <td style={styles.tableRows}>{t('gamePageGameID')}:</td>
-                <td style={styles.tableRows}>{gameID}</td>
+                <td style={styles.tableRows}>{enteredGameID}</td>
               </tr>
             </tbody>
           </table>

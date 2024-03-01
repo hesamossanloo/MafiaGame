@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   Modal,
   StyleSheet,
   Text,
@@ -8,72 +9,52 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { docExists, getGameInfo } from '../utilities/firestoreService';
 
-const GamePopup = ({
-  onRequestClose,
-  callBackSetEnteredGameID,
-  callBackSetEnteredPlayerName,
-}) => {
+const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
 
-  const handleSubmit = async () => {
-    if (!enteredGameID) {
-      setErrorMessage(t('errorPlayerName'));
-      return;
-    }
-    // Check if the GameID exists in the DB
-    const exists = await docExists(enteredGameID);
-    if (!exists) {
-      setErrorMessage(t('errorGameID'));
-      return;
-    }
-    const info = await getGameInfo(enteredGameID);
-    if (!info) {
-      setErrorMessage(t('errorGameInfo'));
-      return;
-    }
-    getGameInfo(enteredGameID);
-    setEnteredGameID(enteredGameID);
-    callBackSetEnteredGameID(enteredGameID);
-    callBackSetEnteredPlayerName(playerName);
-    onRequestClose(); // Close the popup after submission
-  };
+  console.log(2, error);
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={true}
+      visible={visible}
       onRequestClose={onRequestClose}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEnteredGameID}
-            value={enteredGameID}
-            placeholder={t('gamePageGameID')}
-            placeholderTextColor="#999"
-          />
-          {errorMessage && (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEnteredGameID}
+                value={enteredGameID}
+                placeholder={t('gamePageGameID')}
+                placeholderTextColor="#999"
+              />
+              <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPlayerName}
+                value={playerName}
+                placeholder={t('name')}
+                placeholderTextColor="#999"
+              />
+              {error && <Text style={styles.errorMessage}>{error}</Text>}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => onSubmit(enteredGameID)}
+              >
+                <Text style={styles.textStyle}>{t('submit')}</Text>
+              </TouchableOpacity>
+            </>
           )}
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.textStyle}>{t('submit')}</Text>
-          </TouchableOpacity>
-          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setPlayerName}
-            value={playerName}
-            placeholder={t('name')}
-            placeholderTextColor="#999"
-          />
         </View>
       </View>
     </Modal>

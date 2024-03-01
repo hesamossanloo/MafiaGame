@@ -1,33 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
-import { getGameInfo } from '../utilities/firestoreService';
+import { getGameDocSnapshot } from '../utilities/firestoreService';
 import styles from './GamePageStyles';
 import GamePopup from './GamePopup';
 
 const GamePage = () => {
+  const { t } = useTranslation();
   const [showPopup, setShowPopup] = useState(false);
   const [enteredGameID, setEnteredGameID] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [fetchedGameInfo, setFetchedGameInfo] = useState('');
   const [thisIsGod, setThisIsGod] = useState(false);
-  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (fetchedGameInfo) {
+      setShowPopup(false);
+    }
+    console.log(1, error);
+  }, [fetchedGameInfo, showPopup, error]);
 
   useEffect(() => {
     const storedGodName = window.localStorage.getItem('godName');
     if (storedGodName) {
       const storedGodGeneratedGameId =
         window.localStorage.getItem('godGeneratedGameID');
-      setPlayerName(storedGodName);
-      setEnteredGameID(storedGodGeneratedGameId);
-      setThisIsGod(true);
-      getGameInfo(storedGodGeneratedGameId)
-        .then((info) => {
-          setFetchedGameInfo(info);
-        })
-        .catch((error) => {
-          console.error('Error fetching game info:', error);
-        });
+      const fetchGameInfo = async () => {
+        setPlayerName(storedGodName);
+        setEnteredGameID(storedGodGeneratedGameId);
+        setThisIsGod(true);
+        try {
+          const gameDocSnap = await getGameDocSnapshot(
+            storedGodGeneratedGameId,
+          );
+          if (gameDocSnap.exists()) {
+            setFetchedGameInfo(gameDocSnap.data());
+          } else {
+            console.error('The entered Game ID does not exist!');
+            setError('The entered Game ID does not exist!');
+            setIsLoading(false);
+          }
+        } catch (err) {
+          console.error('Error fetching game info:', err);
+          setError('Error fetching game info!');
+          setIsLoading(false);
+        }
+      };
+      fetchGameInfo();
     }
 
     if (thisIsGod) {
@@ -35,7 +56,31 @@ const GamePage = () => {
     } else {
       setShowPopup(true);
     }
-  }, [thisIsGod, fetchedGameInfo]);
+  }, [thisIsGod, fetchedGameInfo, error]);
+
+  const handleGameIdSubmit = async (gameId) => {
+    setIsLoading(true);
+    setError(null);
+
+    // Fetch the Game Info from DB
+    try {
+      const gameDocSnap = await getGameDocSnapshot(gameId);
+      if (gameDocSnap.exists()) {
+        setFetchedGameInfo(gameDocSnap.data());
+        setIsLoading(false);
+        setShowPopup(false);
+      } else {
+        console.error('The entered Game ID does not exist!');
+        setError('The entered Game ID does not exist!');
+        setFetchedGameInfo(null);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('Error fetching game info:', err);
+      setError('The entered Game ID does not exist!');
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.gamePageContainer}>
@@ -73,9 +118,14 @@ const GamePage = () => {
       )}
       {showPopup && (
         <GamePopup
-          onRequestClose={() => setShowPopup(false)}
-          callBackSetEnteredGameID={setEnteredGameID}
-          callBackSetEnteredPlayerName={setPlayerName}
+          visible={showPopup}
+          isLoading={isLoading}
+          error={error}
+          onRequestClose={() => {
+            setShowPopup(false); // Close the popup when the user manually closes it
+            setError(null); // Reset the error state
+          }}
+          onSubmit={handleGameIdSubmit}
         />
       )}
     </View>

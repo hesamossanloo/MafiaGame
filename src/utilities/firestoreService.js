@@ -23,13 +23,8 @@ export const addNewGameToFirestore = async (godName, numberOfPlayers) => {
   }
 };
 
-export const docExists = async (gameID) => {
+export const getGameDocSnapshot = async (gameID) => {
   const docRef = doc(db, 'games', gameID);
   const docSnap = await getDoc(docRef);
-  return docSnap.exists();
-};
-export const getGameInfo = async (gameID) => {
-  const docRef = doc(db, 'games', gameID);
-  const docSnap = await getDoc(docRef);
-  return docSnap.data();
+  return docSnap;
 };

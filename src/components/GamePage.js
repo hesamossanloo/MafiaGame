@@ -19,7 +19,6 @@ const GamePage = () => {
     if (fetchedGameInfo) {
       setShowPopup(false);
     }
-    console.log(1, error);
   }, [fetchedGameInfo, showPopup, error]);
 
   useEffect(() => {

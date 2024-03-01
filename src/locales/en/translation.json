@@ -4,6 +4,7 @@
   "createNewGame": "Create a new game",
   "numberOfPlayers": "Enter the Number of Players",
   "numberOfPlayersRequired": "Please enter the God's Name",
+  "requireFieldError": "Please fill in all the Required fields",
   "startPageTitle": "Start Page",
   "gamePagePlayerName": "Player's Name",
   "gamePageGameID": "Game ID",

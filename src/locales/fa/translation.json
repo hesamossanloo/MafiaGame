@@ -4,6 +4,7 @@
   "createNewGame": "ایجاد بازی جدید",
   "numberOfPlayers": "تعداد بازیکنان را وارد کنید",
   "numberOfPlayersRequired": "لطفاً نام خدا را وارد کنید",
+  "requireFieldError": "لطفاً تمامی فیلدهای اجباری را پر کنید",
   "startPageTitle": "صفحه شروع",
   "gamePagePlayerName": "نام بازیکن",
   "gamePageGameID": "شناسه بازی",

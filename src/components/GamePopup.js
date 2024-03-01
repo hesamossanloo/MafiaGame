@@ -13,10 +13,18 @@ import {
 const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
+  const [localError, setLocalError] = useState(null);
+
   const { t } = useTranslation();
 
-  console.log(2, error);
-
+  const handleSubmit = () => {
+    if (!enteredGameID.trim() || !playerName.trim()) {
+      setLocalError(t('requireFieldError')); // Assuming 'fieldsRequired' is a key in your translation file for the error message
+    } else {
+      setLocalError(null);
+      onSubmit(enteredGameID, playerName);
+    }
+  };
   return (
     <Modal
       animationType="slide"
@@ -30,7 +38,7 @@ const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
             <>
-              <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
+              <Text style={styles.modalText}>{t('gamePopGameID')}*</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setEnteredGameID}
@@ -38,7 +46,7 @@ const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
                 placeholder={t('gamePageGameID')}
                 placeholderTextColor="#999"
               />
-              <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
+              <Text style={styles.modalText}>{t('gamePopEnterName')}*</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setPlayerName}
@@ -46,11 +54,10 @@ const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
                 placeholder={t('name')}
                 placeholderTextColor="#999"
               />
-              {error && <Text style={styles.errorMessage}>{error}</Text>}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => onSubmit(enteredGameID)}
-              >
+              {(error || localError) && (
+                <Text style={styles.errorMessage}>{error || localError}</Text>
+              )}
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.textStyle}>{t('submit')}</Text>
               </TouchableOpacity>
             </>

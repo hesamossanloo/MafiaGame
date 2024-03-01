@@ -14,8 +14,12 @@
   "gamePopGameID": "شناسه بازی را وارد کنید",
   "errorPlayerName": "لطفاً نام بازیکن را وارد کنید",
   "errorGameID": "شناسه بازی وارد شده با شناسه مورد انتظار مطابقت ندارد!",
+  "errorGameInfo": "امکان دریافت اطلاعات بازی وجود ندارد!",
   "submit": "ارسال",
   "playerTitle": "!شما یک بازیکن هستید",
+  "gameNumAlivePlayers": "تعداد بازیکنان پذیرفته شده",
+  "godName": "نام خدا",
   "godTitle": "!شما خدا هستید",
+  "refresh": "تازه‌سازی",
   "rolesPageTitle": "صفحه نقش‌ها"
 }

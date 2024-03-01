@@ -13,6 +13,10 @@ import {
 } from 'react-native';
 import styles from '../../AppStyles';
 import { addNewGameToFirestore } from '../utilities/firestoreService';
+import {
+  clearLocalStorageStartPage,
+  setLocalStorageStartPage,
+} from '../utilities/functions';
 
 // Get screen width and height
 const screenWidth = Dimensions.get('window').width;
@@ -20,12 +24,18 @@ const screenHeight = Dimensions.get('window').height;
 
 const StartPage = ({ navigation }) => {
   const { t } = useTranslation();
+
+  // Form Data
   const [godName, setGodName] = useState('Hesi');
   const [numberOfPlayers, setNumberOfPlayers] = useState(10);
+
+  // Modal and New Game ID Handling
+  const [showModal, setShowModal] = useState(false);
+  const [godGeneratedGameID, setGodGeneratedGameID] = useState('');
+
+  // Errors
   const [godNameError, setGodNameError] = useState('');
   const [numberOfPlayersError, setNumberOfPlayersError] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [newGameID, setNewGameID] = useState('');
 
   const handleNewGame = () => {
     let isValid = true;
@@ -48,9 +58,9 @@ const StartPage = ({ navigation }) => {
       // Call the Firestore function to create a new game document
       addNewGameToFirestore(godName, numberOfPlayers)
         .then((gameID) => {
-          setNewGameID(gameID);
+          setGodGeneratedGameID(gameID);
           setShowModal(true);
-          setLocalStorage(gameID, godName);
+          setLocalStorageStartPage(gameID, godName);
         })
         .catch((error) => {
           console.error('Error creating game:', error);
@@ -58,34 +68,19 @@ const StartPage = ({ navigation }) => {
     }
   };
 
-  const setLocalStorage = (_gameID, _name) => {
-    window.localStorage.setItem('enteredGameID', _gameID);
-    window.localStorage.setItem('playerName', _name);
-    window.localStorage.setItem('isGameIDConfirmed', 'true');
-  };
-  const clearLocalStorage = () => {
-    window.localStorage.removeItem('enteredGameID');
-    window.localStorage.removeItem('playerName');
-    window.localStorage.removeItem('isGameIDConfirmed');
-  };
-
-  const handleJoinGame = () => {
-    setShowModal(false);
-    clearLocalStorage();
-    navigation.navigate('game', {
-      gameID: 'join',
-    });
-  };
-
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(newGameID);
+    await Clipboard.setStringAsync(godGeneratedGameID);
   };
 
   const handleContinue = () => {
     setShowModal(false);
-    navigation.navigate('game', {
-      gameID: newGameID,
-    });
+    navigation.navigate('game');
+  };
+
+  const handleJoinGame = () => {
+    setShowModal(false);
+    clearLocalStorageStartPage();
+    navigation.navigate('game');
   };
 
   const btnJoin = {
@@ -143,7 +138,7 @@ const StartPage = ({ navigation }) => {
             <View style={styles.modalInputCopyContainer}>
               <TextInput
                 style={styles.input}
-                value={newGameID}
+                value={godGeneratedGameID}
                 editable={false}
               />
               <TouchableOpacity

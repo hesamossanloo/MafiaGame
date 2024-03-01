@@ -8,8 +8,8 @@ import {
 import db from './firebaseConfig'; // adjust the import path as needed
 import { createGame } from './functions';
 
-export const addNewGameToFirestore = async (gameName, numberOfPlayers) => {
-  const game = createGame(gameName, numberOfPlayers);
+export const addNewGameToFirestore = async (godName, numberOfPlayers) => {
+  const game = createGame(godName, numberOfPlayers);
 
   try {
     const docRef = await addDoc(collection(db, 'games'), {
@@ -27,4 +27,9 @@ export const docExists = async (gameID) => {
   const docRef = doc(db, 'games', gameID);
   const docSnap = await getDoc(docRef);
   return docSnap.exists();
+};
+export const getGameInfo = async (gameID) => {
+  const docRef = doc(db, 'games', gameID);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
 };

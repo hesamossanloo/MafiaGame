@@ -1,62 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
+import { getGameInfo } from '../utilities/firestoreService';
 import styles from './GamePageStyles';
 import GamePopup from './GamePopup';
 
-const GamePage = ({ route }) => {
-  const { gameID } = route.params;
+const GamePage = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [enteredGameID, setEnteredGameID] = useState(null);
-  const [playerName, setPlayerName] = useState(null);
-  const [gameExists, setGameExists] = useState(false);
+  const [enteredGameID, setEnteredGameID] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [fetchedGameInfo, setFetchedGameInfo] = useState('');
+  const [thisIsGod, setThisIsGod] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Attempt to read enteredGameID, player's name and its confirmation state from local storage
-    const storedGameID = window.localStorage.getItem('enteredGameID');
-    const storedPlayerName = window.localStorage.getItem('playerName');
-    const isConfirmed =
-      window.localStorage.getItem('isGameIDConfirmed') === 'true'; // Ensure to compare with string 'true'
-
-    if (storedGameID && isConfirmed) {
-      setEnteredGameID(storedGameID);
-      setGameExists(true);
-      setPlayerName(storedPlayerName);
-      setShowPopup(false); // If confirmed and matches, don't show popup
-    } else {
-      setShowPopup(true); // Otherwise, show popup to enter gameID
+    const storedGodName = window.localStorage.getItem('godName');
+    if (storedGodName) {
+      const storedGodGeneratedGameId =
+        window.localStorage.getItem('godGeneratedGameID');
+      setPlayerName(storedGodName);
+      setEnteredGameID(storedGodGeneratedGameId);
+      setThisIsGod(true);
+      getGameInfo(storedGodGeneratedGameId)
+        .then((info) => {
+          setFetchedGameInfo(info);
+        })
+        .catch((error) => {
+          console.error('Error fetching game info:', error);
+        });
     }
-  }, [gameID]);
 
-  useEffect(() => {
-    if (gameExists && enteredGameID && playerName) {
+    if (thisIsGod) {
       setShowPopup(false);
-      // Save enteredGameID and its confirmation state to local storage
-      window.localStorage.setItem('enteredGameID', enteredGameID);
-      window.localStorage.setItem('playerName', playerName);
-      window.localStorage.setItem('isGameIDConfirmed', 'true');
     } else {
       setShowPopup(true);
     }
-  }, [enteredGameID, gameID, playerName, gameExists]);
+  }, [thisIsGod, fetchedGameInfo]);
 
   return (
     <View style={styles.gamePageContainer}>
-      {enteredGameID && (
+      {fetchedGameInfo && (
         <>
           <Text style={styles.title}>
-            {gameID === 'join' ? t('playerTitle') : t('godTitle')}
+            {thisIsGod ? t('godTitle') : t('playerTitle')}
           </Text>
           <table style={styles.table}>
             <tbody>
               <tr>
-                <td style={styles.tableRows}>{t('gamePagePlayerName')}:</td>
-                <td style={styles.tableRows}>{playerName}</td>
+                <td style={styles.tableRows}>{t('godName')}:</td>
+                <td style={styles.tableRows}>{fetchedGameInfo.godName}</td>
               </tr>
+              {!thisIsGod && (
+                <tr>
+                  <td style={styles.tableRows}>{t('gamePagePlayerName')}:</td>
+                  <td style={styles.tableRows}>{playerName}</td>
+                </tr>
+              )}
               <tr>
                 <td style={styles.tableRows}>{t('gamePageGameID')}:</td>
                 <td style={styles.tableRows}>{enteredGameID}</td>
+              </tr>
+              <tr>
+                <td style={styles.tableRows}>{t('gameNumAlivePlayers')}:</td>
+                <td style={styles.tableRows}>
+                  {fetchedGameInfo.alivePlayers.length} out of{' '}
+                  {fetchedGameInfo.numberOfPlayers}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -67,7 +76,6 @@ const GamePage = ({ route }) => {
           onRequestClose={() => setShowPopup(false)}
           callBackSetEnteredGameID={setEnteredGameID}
           callBackSetEnteredPlayerName={setPlayerName}
-          callBackSetGameExists={setGameExists}
         />
       )}
     </View>

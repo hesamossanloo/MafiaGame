@@ -8,13 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { docExists } from '../utilities/firestoreService';
+import { docExists, getGameInfo } from '../utilities/firestoreService';
 
 const GamePopup = ({
   onRequestClose,
   callBackSetEnteredGameID,
   callBackSetEnteredPlayerName,
-  callBackSetGameExists,
 }) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
@@ -27,15 +26,20 @@ const GamePopup = ({
       return;
     }
     // Check if the GameID exists in the DB
-    const gameExists = await docExists(enteredGameID);
-    if (!gameExists) {
+    const exists = await docExists(enteredGameID);
+    if (!exists) {
       setErrorMessage(t('errorGameID'));
       return;
     }
+    const info = await getGameInfo(enteredGameID);
+    if (!info) {
+      setErrorMessage(t('errorGameInfo'));
+      return;
+    }
+    getGameInfo(enteredGameID);
     setEnteredGameID(enteredGameID);
     callBackSetEnteredGameID(enteredGameID);
     callBackSetEnteredPlayerName(playerName);
-    callBackSetGameExists(gameExists);
     onRequestClose(); // Close the popup after submission
   };
 
@@ -48,14 +52,6 @@ const GamePopup = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setPlayerName}
-            value={playerName}
-            placeholder={t('name')}
-            placeholderTextColor="#999"
-          />
           <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
           <TextInput
             style={styles.input}
@@ -67,10 +63,17 @@ const GamePopup = ({
           {errorMessage && (
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           )}
-
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.textStyle}>{t('submit')}</Text>
           </TouchableOpacity>
+          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setPlayerName}
+            value={playerName}
+            placeholder={t('name')}
+            placeholderTextColor="#999"
+          />
         </View>
       </View>
     </Modal>
@@ -90,13 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
     elevation: 5,
   },
   button: {

@@ -1,4 +1,8 @@
 {
+  "errorPlayerName": "لطفاً نام بازیکن را وارد کنید",
+  "errorGameID": "شناسه بازی وارد شده با شناسه مورد انتظار مطابقت ندارد!",
+  "errorGameInfo": "امکان دریافت اطلاعات بازی وجود ندارد!",
+  "errorPlayerExists": "نام بازیکن قبلاً استفاده شده است!",
   "nameOfGodLabel": "نام خدا را وارد کنید",
   "toggleLang": "English",
   "createNewGame": "ایجاد بازی جدید",
@@ -13,9 +17,6 @@
   "joinGame": "پیوستن به یک بازی",
   "gamePopEnterName": "نام خود را وارد کنید",
   "gamePopGameID": "شناسه بازی را وارد کنید",
-  "errorPlayerName": "لطفاً نام بازیکن را وارد کنید",
-  "errorGameID": "شناسه بازی وارد شده با شناسه مورد انتظار مطابقت ندارد!",
-  "errorGameInfo": "امکان دریافت اطلاعات بازی وجود ندارد!",
   "submit": "ارسال",
   "playerTitle": "!شما یک بازیکن هستید",
   "gameNumAlivePlayers": "تعداد بازیکنان پذیرفته شده",

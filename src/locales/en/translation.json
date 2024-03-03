@@ -1,4 +1,8 @@
 {
+  "errorPlayerName": "Please enter the players name!",
+  "errorGameID": "Entered Game ID does not match the expected Game ID!",
+  "errorGameInfo": "Couldn't Fetch the Game Info!",
+  "errorPlayerExists": "Players name already exists!",
   "nameOfGodLabel": "Enter God's Name",
   "toggleLang": "فارسی",
   "createNewGame": "Create a new game",
@@ -13,9 +17,6 @@
   "joinGame": "Join a Game.",
   "gamePopEnterName": "Enter Your Name",
   "gamePopGameID": "Enter The Game ID",
-  "errorPlayerName": "Please enter the players name!",
-  "errorGameID": "Entered Game ID does not match the expected Game ID!",
-  "errorGameInfo": "Couldn't Fetch the Game Info!",
   "submit": "Submit",
   "playerTitle": "You are a Player and not the God!",
   "gameNumAlivePlayers": "Number of admitted Players",

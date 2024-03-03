@@ -10,7 +10,13 @@ import {
   View,
 } from 'react-native';
 
-const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
+const GamePopup = ({
+  visible,
+  isLoading,
+  error,
+  onRequestClose,
+  onSubmit,
+}) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
   const [localError, setLocalError] = useState(null);

@@ -3,6 +3,7 @@
   "errorGameID": "شناسه بازی وارد شده با شناسه مورد انتظار مطابقت ندارد!",
   "errorGameInfo": "امکان دریافت اطلاعات بازی وجود ندارد!",
   "errorPlayerExists": "نام بازیکن قبلاً استفاده شده است!",
+  "errorNumPlayersExceeded": "تنها 10 بازیکن مجاز هستند!",
   "nameOfGodLabel": "نام خدا را وارد کنید",
   "toggleLang": "English",
   "createNewGame": "ایجاد بازی جدید",

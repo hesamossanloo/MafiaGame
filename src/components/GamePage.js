@@ -87,6 +87,14 @@ const GamePage = () => {
         if (gameDocSnap.data().alivePlayers.includes(enteredPlayername)) {
           console.error('errorPlayerExists');
           setError(t('errorPlayerExists'));
+        }
+        if (
+          // Check if the number of players have exceeded
+          gameDocSnap.data().alivePlayers.length >=
+          gameDocSnap.data().numberOfPlayers
+        ) {
+          console.error('errorNumPlayersExceeded');
+          setError(t('errorNumPlayersExceeded'));
         } else {
           // Call the DB API and update the Alive Players
           await updateDocAlivePlayers(gameDocSnap, enteredPlayername);

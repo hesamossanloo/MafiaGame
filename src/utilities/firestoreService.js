@@ -4,6 +4,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore';
@@ -31,12 +32,25 @@ export const getGameDocSnapshot = async (gameID) => {
   return docSnap;
 };
 
-export const updateDocAlivePlayers = async (docSnap, playerName) => {
+export const getGameScenarios = async () => {
+  const collectionRef = collection(db, 'scenarios');
+  const querySnapshot = await getDocs(collectionRef);
+  const scenarios = [];
+  querySnapshot.forEach((docTmp) => {
+    scenarios.push(docTmp);
+  });
+  return scenarios;
+};
+
+export const updateDocAlivePlayers = async (docSnap, playerName, role) => {
   let updateRes;
 
   try {
     updateRes = await updateDoc(docSnap.ref, {
       alivePlayers: arrayUnion(playerName),
+      roles: {
+        [playerName]: role,
+      },
     });
   } catch (error) {
     console.error('Problem updating the Alive Players!', error);

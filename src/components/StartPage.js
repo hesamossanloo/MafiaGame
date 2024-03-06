@@ -1,18 +1,22 @@
 import { Feather } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   Image,
   Modal,
+  Picker,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import styles from '../../AppStyles';
-import { addNewGameToFirestore } from '../utilities/firestoreService';
+import {
+  addNewGameToFirestore,
+  getGameScenarios,
+} from '../utilities/firestoreService';
 import {
   clearLocalStorageStartPage,
   setLocalStorageStartPage,
@@ -27,6 +31,8 @@ const StartPage = ({ navigation }) => {
 
   // Form Data
   const [godName, setGodName] = useState('Hesi');
+  const [scenario, setScenario] = useState('');
+  const [allScenarios, setAllScenarios] = useState(null);
   const [numberOfPlayers, setNumberOfPlayers] = useState(10);
 
   // Modal and New Game ID Handling
@@ -36,22 +42,44 @@ const StartPage = ({ navigation }) => {
   // Errors
   const [godNameError, setGodNameError] = useState('');
   const [numberOfPlayersError, setNumberOfPlayersError] = useState('');
+  const [scenarioError, setScenarioError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const scenarios = await getGameScenarios();
+        setAllScenarios(scenarios);
+        // Do something with the scenarios
+      } catch (error) {
+        console.error('Error getting scenarios:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleNewGame = () => {
     let isValid = true;
 
     if (!godName || godName === '') {
-      setGodNameError(t('godNameRequired'));
+      setGodNameError(t('errorGodNameRequired'));
       isValid = false;
     } else {
       setGodNameError('');
     }
 
     if (!numberOfPlayers || isNaN(numberOfPlayers)) {
-      setNumberOfPlayersError(t('numberOfPlayersRequired'));
+      setNumberOfPlayersError(t('errorNumberOfPlayersRequired'));
       isValid = false;
     } else {
       setNumberOfPlayersError('');
+    }
+
+    if (!scenario) {
+      setScenarioError(t('errorScenarioRequired'));
+      isValid = false;
+    } else {
+      setScenarioError('');
     }
 
     if (isValid) {
@@ -60,7 +88,7 @@ const StartPage = ({ navigation }) => {
         .then((gameID) => {
           setGodGeneratedGameID(gameID);
           setShowModal(true);
-          setLocalStorageStartPage(gameID, godName);
+          setLocalStorageStartPage(gameID, godName, scenario);
         })
         .catch((error) => {
           console.error('Error creating game:', error);
@@ -115,9 +143,33 @@ const StartPage = ({ navigation }) => {
           value={numberOfPlayers}
           onChangeText={(text) => setNumberOfPlayers(text)}
         />
+        <Text style={styles.label}>Select the scenario:</Text>
+        <Picker
+          selectedValue={scenario.id}
+          style={styles.input}
+          onValueChange={(itemValue) => {
+            const selectedScenario = allScenarios.find(
+              (s) => s.id === itemValue,
+            );
+            setScenario(selectedScenario);
+          }}
+        >
+          <Picker.Item label="Select a scenario" value="" />
+          {allScenarios &&
+            allScenarios.map((s) => (
+              <Picker.Item
+                key={s.id}
+                label={s.id.charAt(0).toUpperCase() + s.id.slice(1)}
+                value={s.id}
+              />
+            ))}
+        </Picker>
         {godNameError ? <Text style={styles.error}>{godNameError}</Text> : null}
         {numberOfPlayersError ? (
           <Text style={styles.error}>{numberOfPlayersError}</Text>
+        ) : null}
+        {scenarioError ? (
+          <Text style={styles.error}>{scenarioError}</Text>
         ) : null}
       </View>
 

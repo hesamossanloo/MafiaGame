@@ -10,6 +10,13 @@ const container = {
 const gamePageContainer = {
   color: 'white',
 };
+const button = {
+  backgroundColor: 'red',
+  padding: 10,
+  borderRadius: 5,
+  marginTop: 10,
+  minWidth: '50%',
+};
 export default StyleSheet.create({
   gamePageContainer: {
     ...container,
@@ -23,4 +30,11 @@ export default StyleSheet.create({
   },
   table: { border: '1px solid white', padding: '5px', minWidth: '50%' },
   tableRows: { border: '1px solid white', padding: '5px' },
+  button: {
+    ...button,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
 });

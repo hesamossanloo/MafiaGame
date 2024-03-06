@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import {
   getGameDocSnapshot,
   updateDocAlivePlayers,
@@ -16,6 +16,8 @@ const GamePage = () => {
   const [fetchedGameData, setFetchedGameData] = useState('');
   const [thisIsGod, setThisIsGod] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [scenario, setScenario] = useState(null);
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -43,23 +45,26 @@ const GamePage = () => {
 
   useEffect(() => {
     setThisIsGod(false);
+    // If this is God, then this localstorage variable would return a value,
+    // if not then it would be empty
     const storedGodName = window.localStorage.getItem('godName');
     if (storedGodName) {
       const storedGodGeneratedGameId =
         window.localStorage.getItem('godGeneratedGameID');
+
+      const s = window.localStorage.getItem('scenario');
+      setScenario(JSON.parse(s));
       setPlayerName(storedGodName);
       setGameID(storedGodGeneratedGameId);
       setThisIsGod(true);
-
-      fetchGameInfo(storedGodGeneratedGameId);
-    }
-
-    if (thisIsGod) {
       setShowPopup(false);
+
+      // Because it is a promise, it is recommended to call it like this
+      fetchGameInfo(storedGodGeneratedGameId);
     } else {
       setShowPopup(true);
     }
-  }, [thisIsGod, fetchedGameData, error]);
+  }, []);
 
   const handleGameIdSubmit = async (enteredGameId, enteredPlayername) => {
     setIsLoading(true);
@@ -97,7 +102,7 @@ const GamePage = () => {
           setError(t('errorNumPlayersExceeded'));
         } else {
           // Call the DB API and update the Alive Players
-          await updateDocAlivePlayers(gameDocSnap, enteredPlayername);
+          await updateDocAlivePlayers(gameDocSnap, enteredPlayername, 'Role1');
           const updatedGameDocSnap = await getGameDocSnapshot(enteredGameId);
           setFetchedGameData(updatedGameDocSnap.data());
         }
@@ -138,6 +143,20 @@ const GamePage = () => {
                 <td style={styles.tableRows}>{gameID}</td>
               </tr>
               <tr>
+                <td style={styles.tableRows}>{t('gameScenario')}:</td>
+                <td style={styles.tableRows}>
+                  {scenario.id.charAt(0).toUpperCase() + scenario.id.slice(1)}
+                </td>
+              </tr>
+              {scenario.roles.map((role, index) => (
+                <tr key={index}>
+                  <td style={styles.tableRows}>
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </td>
+                  <td style={styles.tableRows} />
+                </tr>
+              ))}
+              <tr>
                 <td style={styles.tableRows}>{t('gameNumAlivePlayers')}:</td>
                 <td style={styles.tableRows}>
                   {fetchedGameData.alivePlayers.length} out of{' '}
@@ -160,6 +179,9 @@ const GamePage = () => {
           onSubmit={handleGameIdSubmit}
         />
       )}
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Refresh</Text>
+      </TouchableOpacity>
     </View>
   );
 };

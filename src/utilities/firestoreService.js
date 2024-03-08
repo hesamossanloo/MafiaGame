@@ -11,9 +11,12 @@ import {
 import db from './firebaseConfig'; // adjust the import path as needed
 import { createGame } from './functions';
 
-export const addNewGameToFirestore = async (godName, numberOfPlayers) => {
-  const game = createGame(godName, numberOfPlayers);
-
+export const addNewGameToFirestore = async (
+  _godName,
+  _numberOfPlayers,
+  _scenario,
+) => {
+  const game = createGame(_godName, _numberOfPlayers, _scenario);
   try {
     const docRef = await addDoc(collection(db, 'games'), {
       ...game,
@@ -42,15 +45,35 @@ export const getGameScenarios = async () => {
   return scenarios;
 };
 
-export const updateDocAlivePlayers = async (docSnap, playerName, role) => {
+export const updateDocAlivePlayers = async (docSnap, playerName) => {
   let updateRes;
 
   try {
+    const docData = docSnap.data();
+    let randomRole;
+
+    // Only choose a random role if allRoles is not empty
+    if (docData.allRoles.length > 0) {
+      // Randomly choose a Role
+      const randomIndex = Math.floor(Math.random() * docData.allRoles.length);
+      randomRole = docData.allRoles[randomIndex];
+
+      // Remove the randomly chosen role from allRoles
+      docData.allRoles.splice(randomIndex, 1);
+    } else {
+      // If allRoles is empty, set the role to "civilian-plain"
+      randomRole = 'civilian-plain';
+    }
+
+    const updatedAssignedRoles = {
+      ...docData.assignedRoles,
+      [randomRole]: playerName,
+    };
+
     updateRes = await updateDoc(docSnap.ref, {
       alivePlayers: arrayUnion(playerName),
-      roles: {
-        [playerName]: role,
-      },
+      assignedRoles: updatedAssignedRoles,
+      allRoles: docData.allRoles, // Update allRoles in the document
     });
   } catch (error) {
     console.error('Problem updating the Alive Players!', error);

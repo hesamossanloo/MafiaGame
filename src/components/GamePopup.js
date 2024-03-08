@@ -10,7 +10,14 @@ import {
   View,
 } from 'react-native';
 
-const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
+const GamePopup = ({
+  visible,
+  isLoading,
+  error,
+  onRequestClose,
+  onSubmit,
+  navigation,
+}) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
   const [localError, setLocalError] = useState(null);
@@ -59,6 +66,15 @@ const GamePopup = ({ visible, isLoading, error, onRequestClose, onSubmit }) => {
               )}
               <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.textStyle}>{t('submit')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { marginTop: 10 }]}
+                onPress={() => {
+                  onRequestClose();
+                  navigation.goBack();
+                }}
+              >
+                <Text style={styles.textStyle}>{t('goBack')}</Text>
               </TouchableOpacity>
             </>
           )}

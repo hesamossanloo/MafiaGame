@@ -84,7 +84,7 @@ const StartPage = ({ navigation }) => {
 
     if (isValid) {
       // Call the Firestore function to create a new game document
-      addNewGameToFirestore(godName, numberOfPlayers)
+      addNewGameToFirestore(godName, numberOfPlayers, scenario)
         .then((gameID) => {
           setGodGeneratedGameID(gameID);
           setShowModal(true);

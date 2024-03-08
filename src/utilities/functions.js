@@ -1,4 +1,4 @@
-export const createGame = (godName, numberOfPlayers) => {
+export const createGame = (godName, numberOfPlayers, scenario) => {
   return {
     godName,
     numberOfPlayers,
@@ -6,6 +6,9 @@ export const createGame = (godName, numberOfPlayers) => {
     gameFinished: false,
     alivePlayers: [],
     deadPlayers: [],
+    assignedRoles: [],
+    scenario: scenario.id,
+    allRoles: scenario.data().roles,
   };
 };
 
@@ -21,5 +24,4 @@ export const setLocalStorageStartPage = (_gameID, _name, _scenario) => {
 export const clearLocalStorageStartPage = () => {
   window.localStorage.removeItem('godGeneratedGameID');
   window.localStorage.removeItem('godName');
-  window.localStorage.removeItem('scenario');
 };

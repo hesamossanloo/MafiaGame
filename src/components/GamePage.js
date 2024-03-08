@@ -119,12 +119,13 @@ const GamePage = ({ navigation }) => {
         // th eold value which is null or empty.
         if (activeSession) {
           return;
-        }
-        if (gameDocSnap.data().alivePlayers.includes(enteredPlayername)) {
+        } else if (
+          gameDocSnap.data().alivePlayers.includes(enteredPlayername)
+        ) {
           console.error('errorPlayerExists');
           setError(t('errorPlayerExists'));
-        }
-        if (
+          return;
+        } else if (
           // Check if the number of players have exceeded
           gameDocSnap.data().alivePlayers.length >=
           gameDocSnap.data().numberOfPlayers
@@ -133,12 +134,12 @@ const GamePage = ({ navigation }) => {
           setError(
             t('errorNumPlayersExceeded') + gameDocSnap.data().numberOfPlayers,
           );
-        } else {
-          !storedPlayerNameGameID &&
-            window.localStorage.setItem(
-              'playerNameGameID',
-              enteredPlayername + '_' + enteredGameId,
-            );
+          return;
+        } else if (!storedPlayerNameGameID) {
+          window.localStorage.setItem(
+            'playerNameGameID',
+            enteredPlayername + '_' + enteredGameId,
+          );
           // Call the DB API and update the Alive Players
           await updateDocAlivePlayers(gameDocSnap, enteredPlayername);
           const updatedGameDocSnap = await getGameDocSnapshot(enteredGameId);
@@ -199,6 +200,7 @@ const GamePage = ({ navigation }) => {
                     fetchedGameData.scenario.slice(1)}
                 </td>
               </tr>
+              {/* Show all the roles */}
               {thisIsGod &&
                 scenario.roles &&
                 scenario.roles.map((role, index) => (
@@ -207,6 +209,23 @@ const GamePage = ({ navigation }) => {
                     <td style={styles.tableRows}>
                       {fetchedGameData.assignedRoles &&
                         fetchedGameData.assignedRoles[role]}
+                    </td>
+                  </tr>
+                ))}
+              {thisIsGod &&
+                scenario.roles.length < fetchedGameData.numberOfPlayers &&
+                scenario.roles &&
+                fetchedGameData.numberOfPlayers &&
+                [
+                  ...Array(
+                    fetchedGameData.numberOfPlayers - scenario.roles.length,
+                  ),
+                ].map((_, index) => (
+                  <tr key={scenario.roles.length + index}>
+                    <td style={styles.tableRows}>{t('civilian-plain')}</td>
+                    <td style={styles.tableRows}>
+                      {fetchedGameData.assignedRoles &&
+                        fetchedGameData.assignedRoles['civilian-plain']}
                     </td>
                   </tr>
                 ))}
@@ -234,6 +253,17 @@ const GamePage = ({ navigation }) => {
             }}
           >
             <Text style={styles.buttonText}>{t('refresh')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={async () => {
+              setIsLoading(true);
+              setError(null);
+              window.localStorage.removeItem('playerNameGameID');
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.buttonText}>{t('joinANewGame')}</Text>
           </TouchableOpacity>
         </>
       )}

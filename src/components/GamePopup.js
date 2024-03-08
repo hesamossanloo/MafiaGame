@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   Modal,
   StyleSheet,
   Text,
@@ -8,69 +9,75 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { docExists } from '../utilities/firestoreService';
 
 const GamePopup = ({
+  visible,
+  isLoading,
+  error,
   onRequestClose,
-  callBackSetEnteredGameID,
-  callBackSetEnteredPlayerName,
-  callBackSetGameExists,
+  onSubmit,
+  navigation,
 }) => {
   const [playerName, setPlayerName] = useState('');
   const [enteredGameID, setEnteredGameID] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [localError, setLocalError] = useState(null);
+
   const { t } = useTranslation();
 
-  const handleSubmit = async () => {
-    if (!enteredGameID) {
-      setErrorMessage(t('errorPlayerName'));
-      return;
+  const handleSubmit = () => {
+    if (!enteredGameID.trim() || !playerName.trim()) {
+      setLocalError(t('requireFieldError')); // Assuming 'fieldsRequired' is a key in your translation file for the error message
+    } else {
+      setLocalError(null);
+      onSubmit(enteredGameID, playerName);
     }
-    // Check if the GameID exists in the DB
-    const gameExists = await docExists(enteredGameID);
-    if (!gameExists) {
-      setErrorMessage(t('errorGameID'));
-      return;
-    }
-    setEnteredGameID(enteredGameID);
-    callBackSetEnteredGameID(enteredGameID);
-    callBackSetEnteredPlayerName(playerName);
-    callBackSetGameExists(gameExists);
-    onRequestClose(); // Close the popup after submission
   };
-
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={true}
+      visible={visible}
       onRequestClose={onRequestClose}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{t('gamePopEnterName')}</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setPlayerName}
-            value={playerName}
-            placeholder={t('name')}
-            placeholderTextColor="#999"
-          />
-          <Text style={styles.modalText}>{t('gamePopGameID')}</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEnteredGameID}
-            value={enteredGameID}
-            placeholder={t('gamePageGameID')}
-            placeholderTextColor="#999"
-          />
-          {errorMessage && (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <Text style={styles.modalText}>{t('gamePopGameID')}*</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEnteredGameID}
+                value={enteredGameID}
+                placeholder={t('gamePageGameID')}
+                placeholderTextColor="#999"
+              />
+              <Text style={styles.modalText}>{t('gamePopEnterName')}*</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPlayerName}
+                value={playerName}
+                placeholder={t('name')}
+                placeholderTextColor="#999"
+              />
+              {(error || localError) && (
+                <Text style={styles.errorMessage}>{error || localError}</Text>
+              )}
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.textStyle}>{t('submit')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { marginTop: 10 }]}
+                onPress={() => {
+                  onRequestClose();
+                  navigation.goBack();
+                }}
+              >
+                <Text style={styles.textStyle}>{t('goBack')}</Text>
+              </TouchableOpacity>
+            </>
           )}
-
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.textStyle}>{t('submit')}</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -90,13 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
     elevation: 5,
   },
   button: {

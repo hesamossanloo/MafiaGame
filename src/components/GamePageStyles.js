@@ -5,7 +5,7 @@ const container = {
   backgroundColor: '#000',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: 20, // Container padding
+  padding: 10, // Container padding
 };
 const gamePageContainer = {
   color: 'white',
@@ -26,10 +26,10 @@ export default StyleSheet.create({
     fontWeight: '700',
     fontSize: '24px',
     color: 'white',
-    marginBottom: 30,
+    marginBottom: 10,
   },
-  table: { border: '1px solid white', padding: '5px', minWidth: '50%' },
-  tableRows: { border: '1px solid white', padding: '5px' },
+  table: { border: '0.1px solid white', padding: '2px', minWidth: '50%' },
+  tableRows: { border: '0.1px solid white', padding: '2px' },
   button: {
     ...button,
   },

@@ -199,6 +199,7 @@ const GamePage = ({ navigation }) => {
                     fetchedGameData.scenario.slice(1)}
                 </td>
               </tr>
+              {/* Show all the roles */}
               {thisIsGod &&
                 scenario.roles &&
                 scenario.roles.map((role, index) => (
@@ -208,6 +209,20 @@ const GamePage = ({ navigation }) => {
                       {fetchedGameData.assignedRoles &&
                         fetchedGameData.assignedRoles[role]}
                     </td>
+                  </tr>
+                ))}
+              {thisIsGod &&
+                scenario.roles.length < fetchedGameData.numberOfPlayers &&
+                scenario.roles &&
+                fetchedGameData.numberOfPlayers &&
+                [
+                  ...Array(
+                    fetchedGameData.numberOfPlayers - scenario.roles.length,
+                  ),
+                ].map((_, index) => (
+                  <tr key={scenario.roles.length + index}>
+                    <td style={styles.tableRows}>Civilian-plain</td>
+                    <td style={styles.tableRows} />
                   </tr>
                 ))}
               <tr>

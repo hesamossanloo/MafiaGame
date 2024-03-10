@@ -67,7 +67,9 @@ export const updateDocAlivePlayers = async (docSnap, playerName) => {
 
     const updatedAssignedRoles = {
       ...docData.assignedRoles,
-      [randomRole]: playerName,
+      [randomRole]: docData.assignedRoles[randomRole]
+        ? [...docData.assignedRoles[randomRole], playerName]
+        : [playerName],
     };
 
     updateRes = await updateDoc(docSnap.ref, {

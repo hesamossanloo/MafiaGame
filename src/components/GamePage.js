@@ -181,7 +181,17 @@ const GamePage = ({ navigation }) => {
                   {thisIsGod
                     ? t('god')
                     : Object.keys(fetchedGameData.assignedRoles).map((key) => {
-                        if (fetchedGameData.assignedRoles[key] === playerName) {
+                        if (Array.isArray(fetchedGameData.assignedRoles[key])) {
+                          if (
+                            fetchedGameData.assignedRoles[key].includes(
+                              playerName,
+                            )
+                          ) {
+                            return 'civilian-plain';
+                          }
+                        } else if (
+                          fetchedGameData.assignedRoles[key] === playerName
+                        ) {
                           return key;
                         }
                       })}
@@ -195,7 +205,9 @@ const GamePage = ({ navigation }) => {
                     <td style={styles.tableRows}>{t(role)}</td>
                     <td style={styles.tableRows}>
                       {fetchedGameData.assignedRoles &&
-                        fetchedGameData.assignedRoles[role]}
+                        (Array.isArray(fetchedGameData.assignedRoles[role])
+                          ? fetchedGameData.assignedRoles[role].join(', ')
+                          : fetchedGameData.assignedRoles[role])}
                     </td>
                   </tr>
                 ))}
@@ -212,7 +224,13 @@ const GamePage = ({ navigation }) => {
                     <td style={styles.tableRows}>{t('civilian-plain')}</td>
                     <td style={styles.tableRows}>
                       {fetchedGameData.assignedRoles &&
-                        fetchedGameData.assignedRoles['civilian-plain']}
+                        (Array.isArray(
+                          fetchedGameData.assignedRoles['civilian-plain'],
+                        )
+                          ? fetchedGameData.assignedRoles['civilian-plain'][
+                              index
+                            ]
+                          : fetchedGameData.assignedRoles['civilian-plain'])}
                     </td>
                   </tr>
                 ))}

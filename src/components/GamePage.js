@@ -11,6 +11,7 @@ import GamePopup from './GamePopup';
 const GamePage = ({ navigation }) => {
   const { t } = useTranslation();
   const [showPopup, setShowPopup] = useState(false);
+  const [activeSession, setActiveSession] = useState(false);
   const [gameID, setGameID] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [fetchedGameData, setFetchedGameData] = useState('');
@@ -26,9 +27,9 @@ const GamePage = ({ navigation }) => {
     } else {
       setShowPopup(true);
     }
-  }, [fetchedGameData, showPopup, error]);
+  }, [fetchedGameData, showPopup, error, activeSession]);
 
-  const fetchGameInfo = async (enteredGameID) => {
+  const fetchGameInfoForGod = async (enteredGameID) => {
     try {
       const gameDocSnap = await getGameDocSnapshot(enteredGameID);
       if (gameDocSnap.exists()) {
@@ -45,6 +46,7 @@ const GamePage = ({ navigation }) => {
     }
   };
 
+  // Handle if it is God
   useEffect(() => {
     setThisIsGod(false);
     // If this is God, then this localstorage variable would return a value,
@@ -66,20 +68,9 @@ const GamePage = ({ navigation }) => {
       setGameID(storedGodGeneratedGameId);
       setThisIsGod(true);
       setShowPopup(false);
-
+      setActiveSession(true);
       // Because it is a promise, it is recommended to call it like this
-      fetchGameInfo(storedGodGeneratedGameId);
-    }
-    const storedPlayerNameGameID =
-      window.localStorage.getItem('playerNameGameID');
-    if (storedPlayerNameGameID) {
-      setShowPopup(false);
-      const storedPlayerNameGameIDTMP = storedPlayerNameGameID.split('_');
-      const storedGameIDTMP = storedPlayerNameGameIDTMP[1];
-      const storedPlayerNameTMP = storedPlayerNameGameIDTMP[0];
-      handleGameIdSubmit(storedGameIDTMP, storedPlayerNameTMP);
-    } else {
-      setShowPopup(true);
+      fetchGameInfoForGod(storedGodGeneratedGameId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -88,58 +79,61 @@ const GamePage = ({ navigation }) => {
     setIsLoading(true);
     setError(null);
     setThisIsGod(false);
-    let activeSession = false;
-    const storedPlayerNameGameID =
-      window.localStorage.getItem('playerNameGameID');
-    if (
-      storedPlayerNameGameID &&
-      storedPlayerNameGameID === enteredPlayername + '_' + enteredGameId
-    ) {
-      activeSession = true;
+    let _localError = '';
+    let _localSession = '';
+    const storedPlayerNameGameID = window.localStorage.getItem(
+      enteredPlayername + '_' + enteredGameId,
+    );
+    if (storedPlayerNameGameID) {
+      _localSession = true;
+      setActiveSession(true);
+    } else {
+      _localSession = false;
+      setActiveSession(false);
     }
     try {
       // Fetch the Game Info from DB
       const gameDocSnap = await getGameDocSnapshot(enteredGameId);
       if (gameDocSnap.exists()) {
-        // STEP 1
-        // Update the state of the GameData
-
-        // STEP 2
-        // Update the variables' states
+        // Update the states
         setGameID(enteredGameId);
         setIsLoading(false);
         setShowPopup(false);
         setFetchedGameData(gameDocSnap.data());
         setPlayerName(enteredPlayername);
-        // STEP 3
+
         // Validate if already exists, unless add the player name to the list of active players
         // even though we have set the fetchedGameData, earlier, we have to use the
         // We have to use the gameDocSnap.data(), because the useSatet will update the value first
         // after rerendering the component. So if we get the fetchedGameData..alivePlayers, it will show
         // th eold value which is null or empty.
-        if (activeSession) {
-          return;
-        } else if (
+        if (
+          !_localSession &&
           gameDocSnap.data().alivePlayers.includes(enteredPlayername)
         ) {
-          console.error('errorPlayerExists');
-          setError(t('errorPlayerExists'));
-          return;
-        } else if (
+          _localError = t('errorPlayerExists');
+          console.error(_localError);
+          setError(_localError);
+        }
+        if (
+          !_localSession &&
           // Check if the number of players have exceeded
           gameDocSnap.data().alivePlayers.length >=
-          gameDocSnap.data().numberOfPlayers
+            gameDocSnap.data().numberOfPlayers
         ) {
-          console.error('errorNumPlayersExceeded');
-          setError(
-            t('errorNumPlayersExceeded') + gameDocSnap.data().numberOfPlayers,
-          );
-          return;
-        } else if (!storedPlayerNameGameID) {
+          _localError =
+            t('errorNumPlayersExceeded') + gameDocSnap.data().numberOfPlayers;
+          console.error(_localError);
+          setError(_localError);
+        }
+        console.log(0, _localError);
+        if (!_localSession && !_localError) {
+          console.log(0.1, _localError);
           window.localStorage.setItem(
-            'playerNameGameID',
             enteredPlayername + '_' + enteredGameId,
+            true,
           );
+          setActiveSession(true);
           // Call the DB API and update the Alive Players
           await updateDocAlivePlayers(gameDocSnap, enteredPlayername);
           const updatedGameDocSnap = await getGameDocSnapshot(enteredGameId);
@@ -160,7 +154,7 @@ const GamePage = ({ navigation }) => {
 
   return (
     <View style={styles.gamePageContainer}>
-      {fetchedGameData && !error && !showPopup && (
+      {fetchedGameData && !error && !showPopup && activeSession && (
         <>
           <Text style={styles.title}>
             {thisIsGod ? t('godTitle') : t('playerTitle')}
@@ -187,17 +181,20 @@ const GamePage = ({ navigation }) => {
                   {thisIsGod
                     ? t('god')
                     : Object.keys(fetchedGameData.assignedRoles).map((key) => {
-                        if (fetchedGameData.assignedRoles[key] === playerName) {
+                        if (Array.isArray(fetchedGameData.assignedRoles[key])) {
+                          if (
+                            fetchedGameData.assignedRoles[key].includes(
+                              playerName,
+                            )
+                          ) {
+                            return 'civilian-plain';
+                          }
+                        } else if (
+                          fetchedGameData.assignedRoles[key] === playerName
+                        ) {
                           return key;
                         }
                       })}
-                </td>
-              </tr>
-              <tr>
-                <td style={styles.tableRows}>{t('gameScenario')}:</td>
-                <td style={styles.tableRows}>
-                  {fetchedGameData.scenario.charAt(0).toUpperCase() +
-                    fetchedGameData.scenario.slice(1)}
                 </td>
               </tr>
               {/* Show all the roles */}
@@ -208,7 +205,9 @@ const GamePage = ({ navigation }) => {
                     <td style={styles.tableRows}>{t(role)}</td>
                     <td style={styles.tableRows}>
                       {fetchedGameData.assignedRoles &&
-                        fetchedGameData.assignedRoles[role]}
+                        (Array.isArray(fetchedGameData.assignedRoles[role])
+                          ? fetchedGameData.assignedRoles[role].join(', ')
+                          : fetchedGameData.assignedRoles[role])}
                     </td>
                   </tr>
                 ))}
@@ -225,7 +224,13 @@ const GamePage = ({ navigation }) => {
                     <td style={styles.tableRows}>{t('civilian-plain')}</td>
                     <td style={styles.tableRows}>
                       {fetchedGameData.assignedRoles &&
-                        fetchedGameData.assignedRoles['civilian-plain']}
+                        (Array.isArray(
+                          fetchedGameData.assignedRoles['civilian-plain'],
+                        )
+                          ? fetchedGameData.assignedRoles['civilian-plain'][
+                              index
+                            ]
+                          : fetchedGameData.assignedRoles['civilian-plain'])}
                     </td>
                   </tr>
                 ))}
@@ -244,7 +249,7 @@ const GamePage = ({ navigation }) => {
               setIsLoading(true);
               setError(null);
               try {
-                await fetchGameInfo(gameID);
+                await fetchGameInfoForGod(gameID);
               } catch (err) {
                 console.error('Error fetching game info:', err);
                 setError('Error fetching game info!');
@@ -259,7 +264,7 @@ const GamePage = ({ navigation }) => {
             onPress={async () => {
               setIsLoading(true);
               setError(null);
-              window.localStorage.removeItem('playerNameGameID');
+              // window.localStorage.removeItem('playerNameGameID');
               navigation.goBack();
             }}
           >
@@ -267,7 +272,7 @@ const GamePage = ({ navigation }) => {
           </TouchableOpacity>
         </>
       )}
-      {!thisIsGod && showPopup && (
+      {!thisIsGod && showPopup && !activeSession && (
         <GamePopup
           visible={showPopup}
           isLoading={isLoading}

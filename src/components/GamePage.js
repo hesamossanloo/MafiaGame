@@ -104,9 +104,9 @@ const GamePage = ({ navigation }) => {
 
         // Validate if already exists, unless add the player name to the list of active players
         // even though we have set the fetchedGameData, earlier, we have to use the
-        // We have to use the gameDocSnap.data(), because the useSatet will update the value first
-        // after rerendering the component. So if we get the fetchedGameData..alivePlayers, it will show
-        // th eold value which is null or empty.
+        // gameDocSnap.data(), because the useSatet will update the value first
+        // after rerendering the component. So if we get the fetchedGameData.alivePlayers, it will show
+        // the old value which is null or empty.
         if (
           !_localSession &&
           gameDocSnap.data().alivePlayers.includes(enteredPlayername)
@@ -126,9 +126,7 @@ const GamePage = ({ navigation }) => {
           console.error(_localError);
           setError(_localError);
         }
-        console.log(0, _localError);
         if (!_localSession && !_localError) {
-          console.log(0.1, _localError);
           window.localStorage.setItem(
             enteredPlayername + '_' + enteredGameId,
             true,
@@ -183,16 +181,12 @@ const GamePage = ({ navigation }) => {
                     : Object.keys(fetchedGameData.assignedRoles).map((key) => {
                         if (Array.isArray(fetchedGameData.assignedRoles[key])) {
                           if (
-                            fetchedGameData.assignedRoles[key].includes(
-                              playerName,
-                            )
+                            fetchedGameData.assignedRoles[key][0] === playerName
                           ) {
-                            return 'civilian-plain';
+                            return key;
                           }
-                        } else if (
-                          fetchedGameData.assignedRoles[key] === playerName
-                        ) {
-                          return key;
+                        } else {
+                          return 'civilian-plain';
                         }
                       })}
                 </td>

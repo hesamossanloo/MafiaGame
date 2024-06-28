@@ -17,7 +17,6 @@ const GamePage = ({ navigation }) => {
   const [fetchedGameData, setFetchedGameData] = useState('');
   const [thisIsGod, setThisIsGod] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [scenario, setScenario] = useState(null);
 
   const [error, setError] = useState(null);
 
@@ -56,14 +55,6 @@ const GamePage = ({ navigation }) => {
       const storedGodGeneratedGameId =
         window.localStorage.getItem('godGeneratedGameID');
 
-      const storedScenarioJSON = JSON.parse(
-        window.localStorage.getItem('scenario'),
-      );
-      if (storedScenarioJSON) {
-        setScenario(storedScenarioJSON);
-      } else {
-        setError(t('errorScenarioMissing'));
-      }
       setPlayerName(storedGodName);
       setGameID(storedGodGeneratedGameId);
       setThisIsGod(true);
@@ -185,16 +176,13 @@ const GamePage = ({ navigation }) => {
                           ) {
                             return key;
                           }
-                        } else {
-                          return 'civilian-plain';
                         }
                       })}
                 </td>
               </tr>
               {/* Show all the roles */}
               {thisIsGod &&
-                scenario.roles &&
-                scenario.roles.map((role, index) => (
+                fetchedGameData.allRolesTruth.map((role, index) => (
                   <tr key={index}>
                     <td style={styles.tableRows}>{t(role)}</td>
                     <td style={styles.tableRows}>
@@ -202,29 +190,6 @@ const GamePage = ({ navigation }) => {
                         (Array.isArray(fetchedGameData.assignedRoles[role])
                           ? fetchedGameData.assignedRoles[role].join(', ')
                           : fetchedGameData.assignedRoles[role])}
-                    </td>
-                  </tr>
-                ))}
-              {thisIsGod &&
-                scenario.roles.length < fetchedGameData.numberOfPlayers &&
-                scenario.roles &&
-                fetchedGameData.numberOfPlayers &&
-                [
-                  ...Array(
-                    fetchedGameData.numberOfPlayers - scenario.roles.length,
-                  ),
-                ].map((_, index) => (
-                  <tr key={scenario.roles.length + index}>
-                    <td style={styles.tableRows}>{t('civilian-plain')}</td>
-                    <td style={styles.tableRows}>
-                      {fetchedGameData.assignedRoles &&
-                        (Array.isArray(
-                          fetchedGameData.assignedRoles['civilian-plain'],
-                        )
-                          ? fetchedGameData.assignedRoles['civilian-plain'][
-                              index
-                            ]
-                          : fetchedGameData.assignedRoles['civilian-plain'])}
                     </td>
                   </tr>
                 ))}

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
-  Image,
   Modal,
   Picker,
   Text,
@@ -23,8 +22,8 @@ import {
 } from '../utilities/functions';
 
 // Get screen width and height
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+// const screenWidth = Dimensions.get('window').width;
+// const screenHeight = Dimensions.get('window').height;
 
 const StartPage = ({ navigation }) => {
   const { t } = useTranslation();
@@ -42,7 +41,20 @@ const StartPage = ({ navigation }) => {
   // Errors
   const [godNameError, setGodNameError] = useState('');
   const [numberOfPlayersError, setNumberOfPlayersError] = useState('');
+  const [newRole, setNewRole] = useState('');
+  const [additionalRoles, setAdditionalRoles] = useState([]);
   const [scenarioError, setScenarioError] = useState('');
+
+  const handleAddRole = () => {
+    if (newRole.trim() !== '') {
+      setAdditionalRoles([...additionalRoles, newRole.trim()]);
+      setNewRole(''); // Clear input field after adding
+    }
+  };
+
+  const handleRemoveRole = (index) => {
+    setAdditionalRoles(additionalRoles.filter((_, i) => i !== index));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +86,15 @@ const StartPage = ({ navigation }) => {
     } else {
       setNumberOfPlayersError('');
     }
+    if (
+      additionalRoles.length === 0 ||
+      parseInt(numberOfPlayers, 10) !== additionalRoles.length
+    ) {
+      setNumberOfPlayersError(t('errorNumPlayersNRoleNotMatching'));
+      isValid = false;
+    } else {
+      setNumberOfPlayersError('');
+    }
 
     if (!scenario) {
       setScenarioError(t('errorScenarioRequired'));
@@ -84,7 +105,7 @@ const StartPage = ({ navigation }) => {
 
     if (isValid) {
       // Call the Firestore function to create a new game document
-      addNewGameToFirestore(godName, numberOfPlayers, scenario)
+      addNewGameToFirestore(godName, numberOfPlayers, scenario, additionalRoles)
         .then((gameID) => {
           setGodGeneratedGameID(gameID);
           setShowModal(true);
@@ -117,13 +138,13 @@ const StartPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={require('../../assets/mafia-silhouette.jpeg')}
         style={[
           styles.logo,
           { width: screenWidth * 0.8, height: screenHeight * 0.3 },
         ]}
-      />
+      /> */}
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>{t('nameOfGodLabel')}</Text>
@@ -143,7 +164,7 @@ const StartPage = ({ navigation }) => {
           value={numberOfPlayers}
           onChangeText={(text) => setNumberOfPlayers(text)}
         />
-        <Text style={styles.label}>Select the scenario:</Text>
+        <Text style={styles.label}>{t('chooseScenario')}</Text>
         <Picker
           selectedValue={scenario.id}
           style={styles.input}
@@ -151,6 +172,7 @@ const StartPage = ({ navigation }) => {
             const selectedScenario = allScenarios.find(
               (s) => s.id === itemValue,
             );
+            setAdditionalRoles(selectedScenario.data().roles);
             setScenario(selectedScenario);
           }}
         >
@@ -164,6 +186,32 @@ const StartPage = ({ navigation }) => {
               />
             ))}
         </Picker>
+        <Text style={styles.label}>{t('additionalRoles')}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter a role"
+          placeholderTextColor="white"
+          value={newRole}
+          onChangeText={(text) => setNewRole(text)}
+        />
+        <TouchableOpacity onPress={handleAddRole} style={styles.addRoleButton}>
+          <Text>Add</Text>
+        </TouchableOpacity>
+        {/* Displaying roles as tags */}
+        <View style={styles.tagsContainer}>
+          {additionalRoles.map((role, index) => (
+            <View key={index} style={styles.tag}>
+              <Text>{role}</Text>
+              <TouchableOpacity
+                onPress={() => handleRemoveRole(index)}
+                style={styles.removeButton}
+              >
+                <Text>X</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+
         {godNameError ? <Text style={styles.error}>{godNameError}</Text> : null}
         {numberOfPlayersError ? (
           <Text style={styles.error}>{numberOfPlayersError}</Text>

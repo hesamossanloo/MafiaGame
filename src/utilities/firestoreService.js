@@ -15,8 +15,14 @@ export const addNewGameToFirestore = async (
   _godName,
   _numberOfPlayers,
   _scenario,
+  _additionalRoles,
 ) => {
-  const game = createGame(_godName, _numberOfPlayers, _scenario);
+  const game = createGame(
+    _godName,
+    _numberOfPlayers,
+    _scenario,
+    _additionalRoles,
+  );
   try {
     const docRef = await addDoc(collection(db, 'games'), {
       ...game,
@@ -53,16 +59,15 @@ export const updateDocAlivePlayers = async (docSnap, playerName) => {
     let randomRole;
 
     // Only choose a random role if allRoles is not empty
-    if (docData.allRoles.length > 0) {
+    if (docData.allRolesTMP.length > 0) {
       // Randomly choose a Role
-      const randomIndex = Math.floor(Math.random() * docData.allRoles.length);
-      randomRole = docData.allRoles[randomIndex];
+      const randomIndex = Math.floor(
+        Math.random() * docData.allRolesTMP.length,
+      );
+      randomRole = docData.allRolesTMP[randomIndex];
 
       // Remove the randomly chosen role from allRoles
-      docData.allRoles.splice(randomIndex, 1);
-    } else {
-      // If allRoles is empty, set the role to "civilian-plain"
-      randomRole = 'civilian-plain';
+      docData.allRolesTMP.splice(randomIndex, 1);
     }
 
     const updatedAssignedRoles = {
@@ -75,7 +80,7 @@ export const updateDocAlivePlayers = async (docSnap, playerName) => {
     updateRes = await updateDoc(docSnap.ref, {
       alivePlayers: arrayUnion(playerName),
       assignedRoles: updatedAssignedRoles,
-      allRoles: docData.allRoles, // Update allRoles in the document
+      allRolesTMP: docData.allRolesTMP, // Update allRoles in the document
     });
   } catch (error) {
     console.error('Problem updating the Alive Players!', error);

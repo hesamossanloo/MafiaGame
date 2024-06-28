@@ -1,4 +1,9 @@
-export const createGame = (godName, numberOfPlayers, scenario) => {
+export const createGame = (
+  godName,
+  numberOfPlayers,
+  scenario,
+  additionalRoles,
+) => {
   return {
     godName,
     numberOfPlayers,
@@ -8,7 +13,8 @@ export const createGame = (godName, numberOfPlayers, scenario) => {
     deadPlayers: [],
     assignedRoles: [],
     scenario: scenario.id,
-    allRoles: scenario.data().roles,
+    allRolesTruth: additionalRoles,
+    allRolesTMP: additionalRoles,
   };
 };
 

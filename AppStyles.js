@@ -119,4 +119,28 @@ export default StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  addRoleButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+    // padding: 10,
+  },
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+    padding: 8,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  removeButton: {
+    marginLeft: 10,
+  },
 });
